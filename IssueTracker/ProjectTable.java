@@ -3,6 +3,7 @@ package IssueTracker;
 
 /**
  * this class is use to represent the data fetched from external database
+ * this class is used in ProjectDashboard.java
  */
 public class ProjectTable {
     private int projectID;
