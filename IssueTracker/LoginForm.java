@@ -180,7 +180,7 @@ public class LoginForm extends javax.swing.JFrame {
                 throw new Exception("");
             }
             
-            String query = "SELECT * FROM [user] WHERE email = ? AND password = ?";
+            String query = "SELECT * FROM [users] WHERE email = ? AND password = ?";
             st = connectionclass.getConnection().prepareStatement(query);
             
             st.setString(1, email);

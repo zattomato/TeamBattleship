@@ -258,7 +258,7 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
             
             //Check if the userID already exist
-            String query = "SELECT * FROM [user] WHERE email = ?";
+            String query = "SELECT * FROM [users] WHERE email = ?";
             
             //Connect to database
             st2 = connectionclass.getConnection().prepareStatement(query);
@@ -273,12 +273,12 @@ public class RegistrationForm extends javax.swing.JFrame {
                 
                 Connection connection = connectionclass.getConnection();
                 Statement st3 = connection.createStatement();
-                String query1=" SELECT MAX(userID) FROM [user] ";
+                String query1=" SELECT MAX(userID) FROM [users] ";
                 ResultSet rs1 = st3.executeQuery(query1);
                 rs1.next();
                 ID = rs1.getInt("") + 1;
                 
-                String sql = "INSERT INTO [user] VALUES (?,?,?,?,?,?)";
+                String sql = "INSERT INTO [users] VALUES (?,?,?,?,?,?)";
                 
                 st = connectionclass.getConnection().prepareStatement(sql);
                 st.setInt(1, ID);
