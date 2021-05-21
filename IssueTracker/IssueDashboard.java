@@ -46,6 +46,7 @@ public class IssueDashboard extends javax.swing.JFrame {
             Connection connection = connectionClass.getConnection();//establish connection
             
             int issueID;
+            int projectID;
             String issueName;
             String issueStatus;
             String issueTag;
@@ -228,23 +229,19 @@ public class IssueDashboard extends javax.swing.JFrame {
             st = connectionClass.getConnection().prepareStatement(query);
             st.setInt(1, issueID);
             st.setInt(2, projectID);
-            IssuePage form = new IssuePage(st);
+            IssuePage form = new IssuePage(st, projectID);
             form.setVisible(true);
             form.pack();
             form.setLocationRelativeTo(null);
+            // close Issue Dashboard Form
+            this.dispose();
         }catch (SQLException ex) {
         }
         //IssuePage.setVisible(true);
     }//GEN-LAST:event_IssueDashboardTableMouseClicked
 
     private void CreateNewIssueMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CreateNewIssueMouseClicked
-        //got to make Issue Creation Form
-        IssueCreationForm form = new IssueCreationForm();
-        form.setVisible(true);
-        form.pack();
-        form.setLocationRelativeTo(null);
-        // close Issue Dashboard Form
-        this.dispose();
+
     }//GEN-LAST:event_CreateNewIssueMouseClicked
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
@@ -255,7 +252,7 @@ public class IssueDashboard extends javax.swing.JFrame {
 
     private void CreateNewIssueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateNewIssueActionPerformed
         //got to make Issue Creation Form
-        IssueCreationForm form = new IssueCreationForm();
+        IssueCreationForm form = new IssueCreationForm(projectID);
         form.setVisible(true);
         form.pack();
         form.setLocationRelativeTo(null);

@@ -21,12 +21,21 @@ import javax.swing.JOptionPane;
  * @author kaysh
  */
 public class IssueCreationForm extends javax.swing.JFrame {
-
+    private static int projectID;
     /**
      * Creates new form IssueCreationForm
      */
     public IssueCreationForm() {
         initComponents();
+        this.setTitle("Issue Creation Page");
+        this.setLocationRelativeTo(null);
+    }
+    
+    public IssueCreationForm(int projectID) {
+        this.projectID = projectID;
+        initComponents();
+        this.setTitle("Issue Creation Page");
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -251,11 +260,15 @@ public class IssueCreationForm extends javax.swing.JFrame {
     }//GEN-LAST:event_statusActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        // TODO add your handling code here:
+        //go to make Issue Dashboard Form
+        IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectID));
+        issueDashboard.setVisible(true); 
+        issueDashboard.setLocationRelativeTo(null);
+        // close Issue Creation Form
+        this.dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void createButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createButtonActionPerformed
-    
     int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to submit?", "Alert!",JOptionPane.YES_NO_OPTION); // prompt dialog panel
         if(option==0){ // if yes
             try{
@@ -282,32 +295,28 @@ public class IssueCreationForm extends javax.swing.JFrame {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
 
                     String currentTime = sdf.format(dt);    // get current date and time
-                    System.out.println("Done1");
+                    
                     Statement st1 = connection.createStatement(); // create statement from the established connection
                     Statement st2 = connection.createStatement();
-                    System.out.println("Done2");
+                    
                     String query1 = "SELECT MAX(issueID) FROM issue ";   // selecting the highest id currently inside database
                     ResultSet result1 = st1.executeQuery(query1); // execute query1 and store it inside result1
                     result1.next();
                     int issueID = result1.getInt("") + 1; // adding 1 to the highest id inside database and assign it to current issueID to be created
-                    System.out.println("Done3");
-                    String sql = "INSERT INTO issue VALUES ("+issueID+",'"+name+"',"+1+",'"+status+"','"+tag+"','"+currentTime+"','"+assignee+"','creator','"+description+"',"+priority+")";
-                    System.out.println("Done4");
-                    st2.executeUpdate(sql);
-                    System.out.println("DOne5");
-//                    if(st2.executeUpdate(sql) != 0){
-//                        JOptionPane.showMessageDialog(null,"Your issue has been created");
-//                        //got to make login form
-//                        LoginForm form = new LoginForm();
-//                        form.setVisible(true);
-//                        form.pack();
-//                        form.setLocationRelativeTo(null);
-//                        // close registration form
-//                        this.dispose();
-//                    }
-//                    else{
-//                        JOptionPane.showMessageDialog(null,"Check your information");
-//                    }
+                    String sql = "INSERT INTO issue VALUES ("+issueID+",'"+name+"',"+projectID+",'"+status+"','"+tag+"','"+currentTime+"','"+assignee+"','creator','"+description+"',"+priority+")";
+                    if(st2.executeUpdate(sql) != 0){
+                        JOptionPane.showMessageDialog(null,"Your issue has been created");
+                        //got to make login form
+                        LoginForm form = new LoginForm();
+                        form.setVisible(true);
+                        form.pack();
+                        form.setLocationRelativeTo(null);
+                        // close registration form
+                        this.dispose();
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null,"Check your information");
+                    }
                     
                 }//end second try
                 catch (SQLException ex) {
