@@ -18,7 +18,7 @@ import javax.swing.table.TableModel;
  * @author User
  */
 public class IssueDashboard extends javax.swing.JFrame {
-
+    private static int projectID;
     /**
      * Creates new form IssueDashboard
      * @param projectID
@@ -29,6 +29,7 @@ public class IssueDashboard extends javax.swing.JFrame {
         //insertTableContents(); // show the contents of table 'issue' from database
     }
     public IssueDashboard(int projectID) {
+        this.projectID = projectID;
         initComponents();
         this.setLocationRelativeTo(null); //to let the form adjust to the center of our computer screen
         insertTableContents(projectID); // show the contents of table 'issue' from database
@@ -45,7 +46,6 @@ public class IssueDashboard extends javax.swing.JFrame {
             Connection connection = connectionClass.getConnection();//establish connection
             
             int issueID;
-            int projectID;
             String issueName;
             String issueStatus;
             String issueTag;
@@ -152,6 +152,11 @@ public class IssueDashboard extends javax.swing.JFrame {
                 CreateNewIssueMouseClicked(evt);
             }
         });
+        CreateNewIssue.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CreateNewIssueActionPerformed(evt);
+            }
+        });
 
         BackButton.setText("BACK");
         BackButton.addActionListener(new java.awt.event.ActionListener() {
@@ -216,15 +221,30 @@ public class IssueDashboard extends javax.swing.JFrame {
         int row = IssueDashboardTable.getSelectedRow();
         TableModel tableModel = IssueDashboardTable.getModel();
         int issueID = (int)tableModel.getValueAt(row,0);
-        //IssuePage issuePage = new IssuePage(issueID);
-        this.dispose();
+        try{
+            PreparedStatement st;
+            String query = "SELECT * FROM issue WHERE issueID = ? AND projectID = ?" ;
+            Cnx connectionClass = new Cnx(); //create connection
+            st = connectionClass.getConnection().prepareStatement(query);
+            st.setInt(1, issueID);
+            st.setInt(2, projectID);
+            IssuePage form = new IssuePage(st);
+            form.setVisible(true);
+            form.pack();
+            form.setLocationRelativeTo(null);
+        }catch (SQLException ex) {
+        }
         //IssuePage.setVisible(true);
     }//GEN-LAST:event_IssueDashboardTableMouseClicked
 
     private void CreateNewIssueMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CreateNewIssueMouseClicked
-        //CreateIssuePage createIssuePage = new CreateIssuePage();
-        //createIssuePage.setVisible(true);
-        //this.dispose;
+        //got to make Issue Creation Form
+        IssueCreationForm form = new IssueCreationForm();
+        form.setVisible(true);
+        form.pack();
+        form.setLocationRelativeTo(null);
+        // close Issue Dashboard Form
+        this.dispose();
     }//GEN-LAST:event_CreateNewIssueMouseClicked
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
@@ -232,6 +252,16 @@ public class IssueDashboard extends javax.swing.JFrame {
         projectDashboard.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_BackButtonActionPerformed
+
+    private void CreateNewIssueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateNewIssueActionPerformed
+        //got to make Issue Creation Form
+        IssueCreationForm form = new IssueCreationForm();
+        form.setVisible(true);
+        form.pack();
+        form.setLocationRelativeTo(null);
+        // close Issue Dashboard Form
+        this.dispose();
+    }//GEN-LAST:event_CreateNewIssueActionPerformed
 
     /**
      * @param args the command line arguments
