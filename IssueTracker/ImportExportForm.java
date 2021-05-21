@@ -50,7 +50,7 @@ public class ImportExportForm extends javax.swing.JFrame {
         importExportLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         importExportLabel.setText("Import/Export JSON to Database");
 
-        importButton.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
+        importButton.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         importButton.setText("Import");
         importButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -58,7 +58,7 @@ public class ImportExportForm extends javax.swing.JFrame {
             }
         });
 
-        exportButton.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
+        exportButton.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         exportButton.setText("Export");
         exportButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -66,8 +66,13 @@ public class ImportExportForm extends javax.swing.JFrame {
             }
         });
 
-        homeButton.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
+        homeButton.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         homeButton.setText("Home");
+        homeButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                homeButtonActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -397,6 +402,8 @@ public class ImportExportForm extends javax.swing.JFrame {
                                 insertFormattedJSONContents(formattedContents);
                                 JOptionPane.showMessageDialog(null, "SUCCESS!\nyou have imported your JSON file!");
                             }
+                            else
+                                JOptionPane.showMessageDialog(null, "ALERT!\nyour JSON file is not formatted properly!");
                             
                         } catch (SQLException ex) {
                             Logger.getLogger(ImportExportForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -518,6 +525,12 @@ public class ImportExportForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "ALERT!\nSome errors occurs. Please try again.");
         }
     }//GEN-LAST:event_exportButtonActionPerformed
+
+    private void homeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeButtonActionPerformed
+        ProjectDashboard projectDashboard = new ProjectDashboard();
+        projectDashboard.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_homeButtonActionPerformed
 
     /**
      * @param args the command line arguments
