@@ -12,8 +12,13 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -21,9 +26,9 @@ import java.util.logging.Logger;
  */
 public class IssuePage extends javax.swing.JFrame {
     private PreparedStatement statement;
-    private static int projectID;
-    private static int issueID;
-    private static String projectName;
+    private static int projectIDs;
+    private static int issueIDs;
+    private static String projectNames;
     private static String[][] userInfo;
     /**
      * Creates new form IssuePage
@@ -35,7 +40,7 @@ public class IssuePage extends javax.swing.JFrame {
     }
     
     public IssuePage(PreparedStatement st, int projectID) throws SQLException{
-        this.projectID = projectID;
+        this.projectIDs = projectID;
         statement = st;
         ResultSet rs = st.executeQuery();
         try{
@@ -50,7 +55,8 @@ public class IssuePage extends javax.swing.JFrame {
             }
         }
         System.out.println("");
-        issueID = Integer.valueOf(userInfo[0][1]);
+        issueIDs = Integer.valueOf(userInfo[0][1]);
+        
         }catch (SQLException ex) {
         }
         String query1 = "SELECT* FROM project WHERE projectID =" + projectID;//query to select all from selected row in table named 'issue'
@@ -61,9 +67,9 @@ public class IssuePage extends javax.swing.JFrame {
         Statement st1 = connection.createStatement(); //create a statement using connection that already establish
         ResultSet result1 = st1.executeQuery(query1); // execute query1 and store the result into result1
         while(result1.next()){
-            projectName = result1.getString("projectName");
+            projectNames = result1.getString("projectName");
         }
-        System.out.println(projectName);
+        System.out.println(projectNames);
         }catch (SQLException ex){
             
         }
@@ -81,12 +87,12 @@ public class IssuePage extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        issueID = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
-        jLabel11 = new javax.swing.JLabel();
+        name = new javax.swing.JLabel();
+        tag = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jLabel8 = new javax.swing.JLabel();
@@ -94,31 +100,32 @@ public class IssuePage extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jLabel13 = new javax.swing.JLabel();
-        jLabel14 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
-        jLabel16 = new javax.swing.JLabel();
-        jLabel17 = new javax.swing.JLabel();
+        creator = new javax.swing.JLabel();
+        assignee = new javax.swing.JLabel();
+        priority = new javax.swing.JLabel();
+        dateCreated = new javax.swing.JLabel();
+        projectName = new javax.swing.JLabel();
+        statusBox = new javax.swing.JComboBox<>();
         commentButton = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        description = new javax.swing.JTextArea();
         backButton = new javax.swing.JButton();
+        updateButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("Issue ID");
+        issueID.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
+        issueID.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        issueID.setText("Issue ID");
 
         jLabel2.setText("Issue Name:");
 
         jLabel4.setText("Issue Tag:");
 
-        jLabel10.setText("Issue Name");
+        name.setText("Issue Name");
 
-        jLabel11.setText("Issue Tag");
+        tag.setText("Issue Tag");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -130,11 +137,11 @@ public class IssuePage extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(tag, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(name, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -143,16 +150,16 @@ public class IssuePage extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel10))
+                    .addComponent(name))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jLabel11))
+                    .addComponent(tag))
                 .addGap(18, 18, 18))
         );
 
-        jLabel10.setText(userInfo[1][1]);
-        jLabel11.setText(userInfo[4][1]);
+        name.setText(userInfo[1][1]);
+        tag.setText(userInfo[4][1]);
 
         jLabel3.setText("Created by:");
 
@@ -166,17 +173,21 @@ public class IssuePage extends javax.swing.JFrame {
 
         jLabel9.setText("Project Name:");
 
-        jLabel12.setText("Created by");
+        creator.setText("Created by");
 
-        jLabel13.setText("Assignee");
+        assignee.setText("Assignee");
 
-        jLabel14.setText("Priority");
+        priority.setText("Priority");
 
-        jLabel15.setText("Created on");
+        dateCreated.setText("Created on");
 
-        jLabel16.setText("Status");
+        projectName.setText("Project Name");
 
-        jLabel17.setText("Project ID");
+        statusBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                statusBoxActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -188,30 +199,31 @@ public class IssuePage extends javax.swing.JFrame {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(assignee, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel7)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(priority, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel12, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(creator, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 116, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel8)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel15, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(dateCreated, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel9)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel17, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE))
+                        .addComponent(projectName, javax.swing.GroupLayout.DEFAULT_SIZE, 167, Short.MAX_VALUE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel5)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel16, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(statusBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -221,29 +233,28 @@ public class IssuePage extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jLabel8)
-                    .addComponent(jLabel12)
-                    .addComponent(jLabel15))
+                    .addComponent(creator)
+                    .addComponent(dateCreated))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
                     .addComponent(jLabel6)
-                    .addComponent(jLabel13)
-                    .addComponent(jLabel16))
+                    .addComponent(assignee)
+                    .addComponent(statusBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel9)
                     .addComponent(jLabel7)
-                    .addComponent(jLabel14)
-                    .addComponent(jLabel17))
+                    .addComponent(priority)
+                    .addComponent(projectName))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
-        jLabel12.setText(userInfo[7][1]);
-        jLabel13.setText(userInfo[6][1]);
-        jLabel14.setText(userInfo[9][1]);
-        jLabel15.setText(userInfo[5][1]);
-        jLabel16.setText(userInfo[3][1]);
-        jLabel17.setText(projectName);
+        creator.setText(userInfo[7][1]);
+        assignee.setText(userInfo[6][1]);
+        priority.setText(userInfo[9][1]);
+        dateCreated.setText(userInfo[5][1]);
+        projectName.setText(projectNames);
 
         commentButton.setText("See Comments");
         commentButton.addActionListener(new java.awt.event.ActionListener() {
@@ -255,16 +266,16 @@ public class IssuePage extends javax.swing.JFrame {
         jPanel4.setBackground(new java.awt.Color(204, 204, 204));
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setLineWrap(true);
-        jTextArea1.setRows(5);
-        jTextArea1.setText("Description\n");
-        jTextArea1.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        jScrollPane2.setViewportView(jTextArea1);
+        description.setColumns(20);
+        description.setLineWrap(true);
+        description.setRows(5);
+        description.setText("Description\n");
+        description.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        jScrollPane2.setViewportView(description);
         jScrollPane2.setBounds(40, 300, 200, 200);
-        jTextArea1.setText(userInfo[8][1]);
-        jTextArea1.setEditable(false);
-        jTextArea1.getAccessibleContext().setAccessibleDescription("");
+        description.setText(userInfo[8][1]);
+        description.setEditable(false);
+        description.getAccessibleContext().setAccessibleDescription("");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -284,13 +295,20 @@ public class IssuePage extends javax.swing.JFrame {
             }
         });
 
+        updateButton.setText("Update");
+        updateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                updateButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(270, 270, 270)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(issueID, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(270, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -299,6 +317,8 @@ public class IssuePage extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                         .addComponent(commentButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(updateButton)
+                        .addGap(18, 18, 18)
                         .addComponent(backButton))
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -308,7 +328,7 @@ public class IssuePage extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(issueID, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(9, 9, 9)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(33, 33, 33)
@@ -318,11 +338,12 @@ public class IssuePage extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(commentButton)
-                    .addComponent(backButton))
+                    .addComponent(backButton)
+                    .addComponent(updateButton))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
 
-        jLabel1.setText("Issue ID: " +userInfo[0][1]);
+        issueID.setText("Issue ID: " +userInfo[0][1]);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -340,7 +361,7 @@ public class IssuePage extends javax.swing.JFrame {
 
     private void commentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentButtonActionPerformed
         //go to make Comment Page
-        CommentPage commentPage = new CommentPage(Integer.valueOf(projectID), Integer.valueOf(issueID));
+        CommentPage commentPage = new CommentPage(Integer.valueOf(projectIDs), Integer.valueOf(issueIDs));
         commentPage.setVisible(true); 
         commentPage.setLocationRelativeTo(null);
         // close Issue Creation Form
@@ -349,12 +370,84 @@ public class IssuePage extends javax.swing.JFrame {
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         //go to make Issue Dashboard Form
-        IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectID));
+        IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectIDs));
         issueDashboard.setVisible(true); 
         issueDashboard.setLocationRelativeTo(null);
         // close Issue Creation Form
         this.dispose();
     }//GEN-LAST:event_backButtonActionPerformed
+
+    private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
+//        int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to submit?", "Alert!",JOptionPane.YES_NO_OPTION); // prompt dialog panel
+//            if(option==0){ // if yes
+//                try{
+//                    String name = this.name.getText();
+//                    String creator = this.creator.getText();
+//                    String assignee = this.assignee.getText();
+//                    String status = statusBox.getSelectedItem().toString();
+//                    String tag= this.tag.getText();
+//                    String priority = this.priority.getText();
+//                    String description = this.description.getText(); 
+//                    //make sure there is 1 or 2 digit priority
+//                    Matcher matcher1 = Pattern.compile("^[0-1][0]$").matcher(priority);
+//                    Matcher matcher2 = Pattern.compile("^[0-9]$").matcher(priority);
+//                    if(!matcher1.find() && !matcher2.find()){
+//                        JOptionPane.showMessageDialog(null, "ALERT!\nInvalid Priority");
+//                        this.priority.setText(null);
+//                        throw new Exception("");
+//                    }
+//
+//                    //check if any field is empty
+//                    if(name.equals("")||assignee.equals("")||status.equals("")||tag.equals("")||priority.equals("")||description.equals("")){
+//                        JOptionPane.showMessageDialog(null, "ALERT!Please enter all requirement field");
+//                        throw new Exception("");
+//                    }
+//
+//                    try{
+//
+//                        Cnx connectionClass = new Cnx(); // create connection 
+//                        Connection connection = connectionClass.getConnection(); //create connection
+//
+//                        Date dt = new java.util.Date();
+//
+//                        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
+//
+//                        String currentTime = sdf.format(dt);    // get current date and time
+//
+//                        Statement st1 = connection.createStatement(); // create statement from the established connection
+//                        Statement st2 = connection.createStatement();
+//
+//                        String query1 = "SELECT MAX(issueID) FROM issue ";   // selecting the highest id currently inside database
+//                        ResultSet result1 = st1.executeQuery(query1); // execute query1 and store it inside result1
+//                        result1.next();
+//                        int issueID = result1.getInt("") + 1; // adding 1 to the highest id inside database and assign it to current issueID to be created
+//                        String sql = "INSERT INTO issue VALUES ("+issueID+",'"+name+"',"+projectIDs+",'"+status+"','"+tag+"','"+currentTime+"','"+assignee+"','"+creator+"','"+description+"',"+priority+")";
+//                        if(st2.executeUpdate(sql) != 0){
+//                            JOptionPane.showMessageDialog(null,"Your issue has been created");
+//                            IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectIDs));
+//                            issueDashboard.setVisible(true); 
+//                            issueDashboard.setLocationRelativeTo(null);
+//                            // close Issue Creation Form
+//                            this.dispose();
+//                        }
+//                        else{
+//                            JOptionPane.showMessageDialog(null,"Check your information");
+//                        }
+//
+//                    }//end second try
+//                    catch (SQLException ex) {
+//                        Logger.getLogger(ProjectDashboard.class.getName()).log(Level.SEVERE, null, ex); // print to the console if sql exceptions occurs
+//                    } 
+//                }//end first try
+//                catch(Exception e){
+//
+//                }
+//            }
+    }//GEN-LAST:event_updateButtonActionPerformed
+
+    private void statusBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusBoxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_statusBoxActionPerformed
 
     /**
      * @param args the command line arguments
@@ -392,17 +485,13 @@ public class IssuePage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel assignee;
     private javax.swing.JButton backButton;
     private javax.swing.JButton commentButton;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
-    private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
-    private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
-    private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
+    private javax.swing.JLabel creator;
+    private javax.swing.JLabel dateCreated;
+    private javax.swing.JTextArea description;
+    private javax.swing.JLabel issueID;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -416,6 +505,11 @@ public class IssuePage extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel name;
+    private javax.swing.JLabel priority;
+    private javax.swing.JLabel projectName;
+    private javax.swing.JComboBox<String> statusBox;
+    private javax.swing.JLabel tag;
+    private javax.swing.JButton updateButton;
     // End of variables declaration//GEN-END:variables
 }
