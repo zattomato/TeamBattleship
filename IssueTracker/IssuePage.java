@@ -19,6 +19,7 @@ import java.util.logging.Logger;
  */
 public class IssuePage extends javax.swing.JFrame {
     private PreparedStatement statement;
+    private static int projectID;
     private static String[][] userInfo;
     /**
      * Creates new form IssuePage
@@ -29,7 +30,8 @@ public class IssuePage extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
     }
     
-    public IssuePage(PreparedStatement st) throws SQLException{
+    public IssuePage(PreparedStatement st, int projectID) throws SQLException{
+        this.projectID = projectID;
         statement = st;
         ResultSet rs = st.executeQuery();
         try{
@@ -79,10 +81,11 @@ public class IssuePage extends javax.swing.JFrame {
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        commentButton = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        backButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -222,10 +225,10 @@ public class IssuePage extends javax.swing.JFrame {
         jLabel16.setText(userInfo[3][1]);
         jLabel17.setText(userInfo[2][1]);
 
-        jButton1.setText("See Comments");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        commentButton.setText("See Comments");
+        commentButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                commentButtonActionPerformed(evt);
             }
         });
 
@@ -249,6 +252,13 @@ public class IssuePage extends javax.swing.JFrame {
             .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
         );
 
+        backButton.setText("Back");
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -261,7 +271,10 @@ public class IssuePage extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(commentButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(backButton))
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(45, 45, 45))
@@ -278,7 +291,9 @@ public class IssuePage extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(commentButton)
+                    .addComponent(backButton))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
 
@@ -300,9 +315,18 @@ public class IssuePage extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void commentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_commentButtonActionPerformed
+
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        //go to make Issue Dashboard Form
+        IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectID));
+        issueDashboard.setVisible(true); 
+        issueDashboard.setLocationRelativeTo(null);
+        // close Issue Creation Form
+        this.dispose();
+    }//GEN-LAST:event_backButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -330,28 +354,7 @@ public class IssuePage extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(IssuePage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
-        try{
-            PreparedStatement st;
-            String query = "SELECT * FROM issue WHERE issueID = ? AND projectID = ?" ;
-            Cnx connectionClass = new Cnx(); //create connection
-            st = connectionClass.getConnection().prepareStatement(query);
-            st.setString(1, "1");
-            st.setString(2, "1");
-            ResultSet rs = st.executeQuery();
-            ResultSetMetaData rsmd = rs.getMetaData();
-            int columnsNumber = rsmd.getColumnCount();
-            userInfo = new String[columnsNumber][2];
-            while (rs.next()) {
-                for (int i = 1; i <= columnsNumber; i++) {
-                    String columnValue = rs.getString(i);
-                    userInfo[i-1][1] = columnValue;
-                    System.out.println(columnValue);
-                    userInfo[i-1][0] = rsmd.getColumnName(i);
-                }
-            }
-        }catch (SQLException ex) {
-        }
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -361,7 +364,8 @@ public class IssuePage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton backButton;
+    private javax.swing.JButton commentButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
