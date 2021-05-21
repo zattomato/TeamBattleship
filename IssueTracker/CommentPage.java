@@ -7,6 +7,7 @@ package IssueTracker;
 
 import ConnectionToDatabase.Cnx;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -22,7 +23,8 @@ import javax.swing.table.TableModel;
  * @author User
  */
 public class CommentPage extends javax.swing.JFrame {
-
+    private static int projectID;
+    private static int issueID;
     /**
      * Creates new form CommentPage
      */
@@ -35,6 +37,8 @@ public class CommentPage extends javax.swing.JFrame {
      * @param projectID and issueID
      */
     public CommentPage(int projectID, int issueID) {
+        this.projectID = projectID;
+        this.issueID = issueID;
         initComponents();
         this.setLocationRelativeTo(null);//to let the form adjust to the center of our computer screen
         insertTableContents(projectID,issueID); // show the contents of selected table 'comment' from database based on projectID and issueID 
@@ -109,6 +113,7 @@ public class CommentPage extends javax.swing.JFrame {
         commentTitle = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         commentTable = new javax.swing.JTable();
+        backButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -141,6 +146,13 @@ public class CommentPage extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(commentTable);
 
+        backButton.setText("Back");
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -151,7 +163,9 @@ public class CommentPage extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap(179, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 572, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(backButton)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 572, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(179, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -161,7 +175,9 @@ public class CommentPage extends javax.swing.JFrame {
                 .addComponent(commentTitle)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(142, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(backButton)
+                .addContainerGap(114, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -195,6 +211,24 @@ public class CommentPage extends javax.swing.JFrame {
         this.dispose();//dispose the current ProjectDashboard GUI
         //reactPage.setVisible(true);
     }//GEN-LAST:event_commentTableMouseClicked
+
+    private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
+        try{
+            PreparedStatement st;
+            String query = "SELECT * FROM issue WHERE issueID = ? AND projectID = ?" ;
+            Cnx connectionClass = new Cnx(); //create connection
+            st = connectionClass.getConnection().prepareStatement(query);
+            st.setInt(1, issueID);
+            st.setInt(2, projectID);
+            IssuePage form = new IssuePage(st, projectID);
+            form.setVisible(true);
+            form.pack();
+            form.setLocationRelativeTo(null);
+            // close Issue Dashboard Form
+            this.dispose();
+        }catch (SQLException ex) {
+        }
+    }//GEN-LAST:event_backButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -232,6 +266,7 @@ public class CommentPage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton backButton;
     private javax.swing.JTable commentTable;
     private javax.swing.JLabel commentTitle;
     private javax.swing.JPanel jPanel1;
