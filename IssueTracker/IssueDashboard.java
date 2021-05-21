@@ -50,7 +50,7 @@ public class IssueDashboard extends javax.swing.JFrame {
             String issueStatus;
             String issueTag;
             int issuePriority;
-            Date issueTime;
+            Timestamp issueTime;
             String issueAssignee;
             String issueCreatedBy;
             String issueDescription;
@@ -66,7 +66,7 @@ public class IssueDashboard extends javax.swing.JFrame {
                 projectID = result1.getInt("projectID");
                 issueStatus = result1.getString("issueStatus");
                 issueTag = result1.getString("issueTag");
-                issueTime = result1.getDate("date");
+                issueTime = result1.getTimestamp("date");
                 issueAssignee = result1.getString("assignee");
                 issueCreatedBy = result1.getString("creator");
                 issueDescription = result1.getString("description");
