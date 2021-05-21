@@ -202,10 +202,10 @@ public class ProjectDashboard extends javax.swing.JFrame {
         int row = projectTable.getSelectedRow(); //get the row which the user clicked on
         TableModel tableModel = projectTable.getModel(); // get the table model
         int projectID = (int)tableModel.getValueAt(row, 0); // get the data inside column projectID, to be passed to Issue Dashbord form
-        //IssueDashboard issueDashboard = new IssueDashboard(projectID); // remove comment after the form have been implemented
+        IssueDashboard issueDashboard = new IssueDashboard(projectID); 
         this.dispose(); //dispose the current ProjectDashboard GUI
-        //issueDashboard.setVisible(true); // remove comment after the form have been implemented
-        
+        issueDashboard.setVisible(true); 
+       
     }//GEN-LAST:event_projectTableMouseClicked
 
     
