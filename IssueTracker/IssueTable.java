@@ -5,6 +5,7 @@
  */
 package IssueTracker;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 /**
@@ -18,12 +19,12 @@ public class IssueTable {
     private String issueStatus;
     private String issueTag;
     private int issuePriority;
-    private Date issueTime;
+    private Timestamp issueTime;
     private String issueAssignee;
     private String issueCreatedBy;
     private String issueDescription;
 
-    public IssueTable(int issueID, String issueName,int projectID, String issueStatus, String issueTag,Date issueTime,String issueAssignee, String issueCreatedBy, String description,int issuePriority) {
+    public IssueTable(int issueID, String issueName,int projectID, String issueStatus, String issueTag,Timestamp issueTime,String issueAssignee, String issueCreatedBy, String description,int issuePriority) {
         this.issueID = issueID;
         this.issueName = issueName;
         this.projectID = projectID;
@@ -92,11 +93,11 @@ public class IssueTable {
         this.issuePriority = issuePriority;
     }
 
-    public Date getIssueTime() {
+    public Timestamp getIssueTime() {
         return issueTime;
     }
 
-    public void setIssueTime(Date issueTime) {
+    public void setIssueTime(Timestamp issueTime) {
         this.issueTime = issueTime;
     }
 

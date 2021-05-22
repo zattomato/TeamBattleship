@@ -101,6 +101,7 @@ public class ProjectDashboard extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         projectTable = new javax.swing.JTable();
         createProject = new javax.swing.JButton();
+        importExportFormButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -150,6 +151,14 @@ public class ProjectDashboard extends javax.swing.JFrame {
             }
         });
 
+        importExportFormButton.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        importExportFormButton.setText("Import/Export JSON");
+        importExportFormButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                importExportFormButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -159,7 +168,10 @@ public class ProjectDashboard extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(81, 81, 81)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(createProject)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(createProject)
+                                .addGap(30, 30, 30)
+                                .addComponent(importExportFormButton))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 631, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(269, 269, 269)
@@ -172,7 +184,9 @@ public class ProjectDashboard extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(24, 24, 24)
-                .addComponent(createProject)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(createProject, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(importExportFormButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(134, Short.MAX_VALUE))
@@ -220,6 +234,13 @@ public class ProjectDashboard extends javax.swing.JFrame {
         this.dispose(); // dispose this ProjectDashboard form
     }//GEN-LAST:event_createProjectActionPerformed
 
+    private void importExportFormButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importExportFormButtonActionPerformed
+        
+        ImportExportForm importExportForm = new ImportExportForm();
+        importExportForm.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_importExportFormButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -257,6 +278,7 @@ public class ProjectDashboard extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton createProject;
+    private javax.swing.JButton importExportFormButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
