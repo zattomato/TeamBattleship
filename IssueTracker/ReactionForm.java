@@ -19,11 +19,27 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 public class ReactionForm extends javax.swing.JFrame {
+    
+    private int cID;
+    private int iID;
+    private int pID;
 
     /**
      * Creates new form ReactionForm
      */
     public ReactionForm() {
+        this.cID=0;
+        this.iID=0;
+        this.pID=0;
+        initComponents();
+        this.setLocationRelativeTo(null);
+    }
+    
+    public ReactionForm(String comment, int commentID, int issueID, int projectID){
+        Comment.setText(comment);
+        this.cID = commentID;
+        this.iID = issueID;
+        this.pID = projectID;
         initComponents();
         this.setLocationRelativeTo(null);
         initial();
@@ -37,10 +53,6 @@ public class ReactionForm extends javax.swing.JFrame {
         Statement st3;
         ResultSet rs, rs2, rs3;
         
-        //Later get these info by make constructor accept 3 parameter
-        int cID=0;
-        int iID=0;
-        int pID=0;
         
         String hp= "happy";
         String sd= "sad";
@@ -96,9 +108,6 @@ public class ReactionForm extends javax.swing.JFrame {
         PreparedStatement st_3;
         ResultSet rs, rs2, rs3;
         
-        int cID=0;
-        int iID=0;
-        int pID=0;
         String hp= "happy";
         String sd= "sad";
         String ag= "angry";
@@ -163,9 +172,6 @@ public class ReactionForm extends javax.swing.JFrame {
         PreparedStatement st, st2, st3;
         ResultSet rs, rs2, rs3;
         
-        int cID=0;
-        int iID=0;
-        int pID=0;
         String hp= "happy";
         String sd= "Sad";
         String ag= "angry";
@@ -263,6 +269,7 @@ public class ReactionForm extends javax.swing.JFrame {
         Happy = new javax.swing.JButton();
         Sad = new javax.swing.JButton();
         Angry = new javax.swing.JButton();
+        Back = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -311,6 +318,14 @@ public class ReactionForm extends javax.swing.JFrame {
             }
         });
 
+        Back.setFont(new java.awt.Font("Times New Roman", 1, 10)); // NOI18N
+        Back.setText("BACK");
+        Back.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BackActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -341,15 +356,20 @@ public class ReactionForm extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Sad, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(Angry, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(Angry, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(Back)))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(55, 55, 55)
+                .addContainerGap()
+                .addComponent(Back)
+                .addGap(29, 29, 29)
                 .addComponent(Comment)
-                .addGap(53, 53, 53)
+                .addGap(45, 45, 45)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(HappyLabel)
                     .addComponent(HappyNum))
@@ -366,7 +386,7 @@ public class ReactionForm extends javax.swing.JFrame {
                     .addComponent(Happy)
                     .addComponent(Sad)
                     .addComponent(Angry))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(47, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -397,6 +417,24 @@ public class ReactionForm extends javax.swing.JFrame {
         reaction(3);
         reactionNum();
     }//GEN-LAST:event_AngryActionPerformed
+
+    private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
+        try{
+            PreparedStatement st;
+            String query = "SELECT * FROM issue WHERE issueID = ? AND projectID = ?" ;
+            Cnx connectionClass = new Cnx(); //create connection
+            st = connectionClass.getConnection().prepareStatement(query);
+            st.setInt(1, iID);
+            st.setInt(2, pID);
+            CommentPage form = new CommentPage(iID, pID);
+            form.setVisible(true);
+            form.pack();
+            form.setLocationRelativeTo(null);
+            // close Issue Dashboard Form
+            this.dispose();
+        }catch (SQLException ex) {
+        }
+    }//GEN-LAST:event_BackActionPerformed
 
     /**
      * @param args the command line arguments
@@ -437,6 +475,7 @@ public class ReactionForm extends javax.swing.JFrame {
     private javax.swing.JButton Angry;
     private javax.swing.JLabel AngryLabel;
     private javax.swing.JLabel AngryNum;
+    private javax.swing.JButton Back;
     private javax.swing.JLabel Comment;
     private javax.swing.JButton Happy;
     private javax.swing.JLabel HappyLabel;
