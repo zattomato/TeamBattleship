@@ -207,9 +207,9 @@ public class CommentPage extends javax.swing.JFrame {
         int row = commentTable.getSelectedRow();
         TableModel tableModel = commentTable.getModel();
         int commentID = (int)tableModel.getValueAt(row,0);
-//        ReactionForm reactPage = new ReactionForm(commentID,issueID,projectID);
+        ReactionForm reactPage = new ReactionForm(commentID,issueID,projectID);
         this.dispose();//dispose the current ProjectDashboard GUI
-        //reactPage.setVisible(true);
+        reactPage.setVisible(true);
     }//GEN-LAST:event_commentTableMouseClicked
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed

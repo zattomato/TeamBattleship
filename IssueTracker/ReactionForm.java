@@ -35,15 +35,32 @@ public class ReactionForm extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
     }
     
-    public ReactionForm(String comment, int commentID, int issueID, int projectID){
-        Comment.setText(comment);
+    public ReactionForm(int commentID, int issueID, int projectID){
         this.cID = commentID;
         this.iID = issueID;
         this.pID = projectID;
+        getComment();
         initComponents();
         this.setLocationRelativeTo(null);
         initial();
         reactionNum();
+    }
+    
+    public void getComment(){
+        try{
+            PreparedStatement st;
+            String query = "SELECT text FROM comment WHERE commentID=? AND issueID = ? AND projectID = ?" ;
+            Cnx connectionClass = new Cnx(); //create connection
+            st = connectionClass.getConnection().prepareStatement(query);
+            st.setInt(1, cID);
+            st.setInt(2, iID);
+            st.setInt(3, pID);
+            ResultSet rs=st.executeQuery();
+            rs.next();
+            String comment= rs.getString("text");
+            Comment.setText(comment);
+        }catch (SQLException ex) {
+        }
     }
     
     public void reactionNum(){
