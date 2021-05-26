@@ -12,12 +12,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 
 /**
@@ -76,6 +72,26 @@ public class IssuePage extends javax.swing.JFrame {
         initComponents();
         this.setTitle("Issue Page");
         this.setLocationRelativeTo(null);
+        statusBox.addItem(userInfo[3][1]);
+        //Open, In Progress, Closed, Resolved, Reopened
+        if(userInfo[3][1].equals("Open")){
+            statusBox.addItem("In Progress");
+            statusBox.addItem("Closed");
+            statusBox.addItem("Resolved");
+        }else if(userInfo[3][1].equals("In Progress")){
+            statusBox.addItem("Open");
+            statusBox.addItem("Closed");
+            statusBox.addItem("Resolved");
+        }else if(userInfo[3][1].equals("Closed")){
+            statusBox.addItem("Reopened");
+        }else if(userInfo[3][1].equals("Resolved")){
+            statusBox.addItem("Closed");
+            statusBox.addItem("Reopened");
+        }else if(userInfo[3][1].equals("Reopened")){
+            statusBox.addItem("In Progress");
+            statusBox.addItem("Closed");
+            statusBox.addItem("Resolved");
+        }
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -378,71 +394,52 @@ public class IssuePage extends javax.swing.JFrame {
     }//GEN-LAST:event_backButtonActionPerformed
 
     private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateButtonActionPerformed
-//        int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to submit?", "Alert!",JOptionPane.YES_NO_OPTION); // prompt dialog panel
-//            if(option==0){ // if yes
-//                try{
-//                    String name = this.name.getText();
-//                    String creator = this.creator.getText();
-//                    String assignee = this.assignee.getText();
-//                    String status = statusBox.getSelectedItem().toString();
-//                    String tag= this.tag.getText();
-//                    String priority = this.priority.getText();
-//                    String description = this.description.getText(); 
-//                    //make sure there is 1 or 2 digit priority
-//                    Matcher matcher1 = Pattern.compile("^[0-1][0]$").matcher(priority);
-//                    Matcher matcher2 = Pattern.compile("^[0-9]$").matcher(priority);
-//                    if(!matcher1.find() && !matcher2.find()){
-//                        JOptionPane.showMessageDialog(null, "ALERT!\nInvalid Priority");
-//                        this.priority.setText(null);
-//                        throw new Exception("");
-//                    }
-//
-//                    //check if any field is empty
-//                    if(name.equals("")||assignee.equals("")||status.equals("")||tag.equals("")||priority.equals("")||description.equals("")){
-//                        JOptionPane.showMessageDialog(null, "ALERT!Please enter all requirement field");
-//                        throw new Exception("");
-//                    }
-//
-//                    try{
-//
-//                        Cnx connectionClass = new Cnx(); // create connection 
-//                        Connection connection = connectionClass.getConnection(); //create connection
-//
-//                        Date dt = new java.util.Date();
-//
-//                        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
-//
-//                        String currentTime = sdf.format(dt);    // get current date and time
-//
-//                        Statement st1 = connection.createStatement(); // create statement from the established connection
-//                        Statement st2 = connection.createStatement();
-//
-//                        String query1 = "SELECT MAX(issueID) FROM issue ";   // selecting the highest id currently inside database
-//                        ResultSet result1 = st1.executeQuery(query1); // execute query1 and store it inside result1
-//                        result1.next();
-//                        int issueID = result1.getInt("") + 1; // adding 1 to the highest id inside database and assign it to current issueID to be created
-//                        String sql = "INSERT INTO issue VALUES ("+issueID+",'"+name+"',"+projectIDs+",'"+status+"','"+tag+"','"+currentTime+"','"+assignee+"','"+creator+"','"+description+"',"+priority+")";
-//                        if(st2.executeUpdate(sql) != 0){
-//                            JOptionPane.showMessageDialog(null,"Your issue has been created");
-//                            IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectIDs));
-//                            issueDashboard.setVisible(true); 
-//                            issueDashboard.setLocationRelativeTo(null);
-//                            // close Issue Creation Form
-//                            this.dispose();
-//                        }
-//                        else{
-//                            JOptionPane.showMessageDialog(null,"Check your information");
-//                        }
-//
-//                    }//end second try
-//                    catch (SQLException ex) {
-//                        Logger.getLogger(ProjectDashboard.class.getName()).log(Level.SEVERE, null, ex); // print to the console if sql exceptions occurs
-//                    } 
-//                }//end first try
-//                catch(Exception e){
-//
-//                }
-//            }
+        int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to submit?", "Alert!",JOptionPane.YES_NO_OPTION); // prompt dialog panel
+            if(option==0){ // if yes
+                try{
+                    String name = this.name.getText();
+                    String creator = this.creator.getText();
+                    String assignee = this.assignee.getText();
+                    String status = statusBox.getSelectedItem().toString();
+                    String tag= this.tag.getText();
+                    String priority = this.priority.getText();
+                    String description = this.description.getText(); 
+                    System.out.println(status);
+                    //make sure the the status is changed
+                    if(status.equals(userInfo[3][1])){
+                        JOptionPane.showMessageDialog(null, "Issue Status is still the same!!!");
+                        throw new Exception("");
+                    }
+                    else{
+                        try{
+
+                            Cnx connectionClass = new Cnx(); // create connection 
+                            Connection connection = connectionClass.getConnection(); //create connection
+                            Statement st = connection.createStatement(); // create statement from the established connection
+
+                            String sql = "UPDATE issue SET issueStatus = '"+status+"' WHERE issueID = "+issueIDs;
+                            if(st.executeUpdate(sql) != 0){
+                                JOptionPane.showMessageDialog(null,"Your issue has been updated");
+                                IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectIDs));
+                                issueDashboard.setVisible(true); 
+                                issueDashboard.setLocationRelativeTo(null);
+                                // close Issue Creation Form
+                                this.dispose();
+                            }
+                            else{
+                                JOptionPane.showMessageDialog(null,"Check your information");
+                            }
+
+                        }//end second try
+                        catch (SQLException ex) {
+                            Logger.getLogger(ProjectDashboard.class.getName()).log(Level.SEVERE, null, ex); // print to the console if sql exceptions occurs
+                        } 
+                    }
+                }//end first try
+                catch(Exception e){
+
+                }
+            }
     }//GEN-LAST:event_updateButtonActionPerformed
 
     private void statusBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusBoxActionPerformed
