@@ -7,10 +7,13 @@ package IssueTracker;
 
 
 import ConnectionToDatabase.Cnx;
+import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 /**
@@ -19,6 +22,7 @@ import javax.swing.table.TableModel;
  */
 public class IssueDashboard extends javax.swing.JFrame {
     private static int projectID;
+    private JFrame referenceToSearchForm; // to refer to the JFrame of SearchForm.java
     /**
      * Creates new form IssueDashboard
      * @param projectID
@@ -27,6 +31,13 @@ public class IssueDashboard extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null); //to let the form adjust to the center of our computer screen
         //insertTableContents(); // show the contents of table 'issue' from database
+    }
+    
+    public IssueDashboard(int projectID, JFrame referenceToSearchForm){ // overloaded constructor to accept reference to SearchForm.java 
+        this(projectID); // calling the constructor with one arguments
+        this.referenceToSearchForm = referenceToSearchForm;
+        searchBackButton.setEnabled(true);
+        
     }
     public IssueDashboard(int projectID) {
         this.projectID = projectID;
@@ -115,8 +126,9 @@ public class IssueDashboard extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         IssueDashboardTable = new javax.swing.JTable();
         CreateNewIssue = new javax.swing.JButton();
-        IssueSearchBar = new javax.swing.JTextField();
+        issueSearchBar = new javax.swing.JTextField();
         BackButton = new javax.swing.JButton();
+        searchBackButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -159,10 +171,36 @@ public class IssueDashboard extends javax.swing.JFrame {
             }
         });
 
-        BackButton.setText("BACK");
+        issueSearchBar.setFont(new java.awt.Font("Trebuchet MS", 0, 14)); // NOI18N
+        issueSearchBar.setForeground(new java.awt.Color(153, 153, 153));
+        issueSearchBar.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        issueSearchBar.setText("Search");
+        issueSearchBar.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                issueSearchBarFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                issueSearchBarFocusLost(evt);
+            }
+        });
+        issueSearchBar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                issueSearchBarKeyPressed(evt);
+            }
+        });
+
+        BackButton.setText("Back");
         BackButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 BackButtonActionPerformed(evt);
+            }
+        });
+
+        searchBackButton.setText("Back To Search");
+        searchBackButton.setEnabled(false);
+        searchBackButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchBackButtonActionPerformed(evt);
             }
         });
 
@@ -170,38 +208,40 @@ public class IssueDashboard extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(123, 123, 123)
-                .addComponent(BackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(CreateNewIssue)
-                .addGap(132, 132, 132))
             .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(257, 257, 257)
+                .addComponent(IssueDashboardLabel)
+                .addContainerGap(288, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(68, 68, 68)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(257, 257, 257)
-                        .addComponent(IssueDashboardLabel))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(70, 70, 70)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(IssueSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 315, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(84, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(53, 53, 53)
+                        .addComponent(BackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(136, 136, 136)
+                        .addComponent(searchBackButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(CreateNewIssue)
+                        .addGap(48, 48, 48))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(issueSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(23, 23, 23)
                 .addComponent(IssueDashboardLabel)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
-                .addComponent(IssueSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(issueSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(CreateNewIssue)
-                    .addComponent(BackButton))
-                .addGap(26, 26, 26))
+                    .addComponent(BackButton)
+                    .addComponent(searchBackButton))
+                .addContainerGap(77, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -260,6 +300,34 @@ public class IssueDashboard extends javax.swing.JFrame {
         this.dispose();
     }//GEN-LAST:event_CreateNewIssueActionPerformed
 
+    private void searchBackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBackButtonActionPerformed
+        referenceToSearchForm.setVisible(true); // set SearchForm.java to visible
+        this.dispose(); // dispose this current form
+    }//GEN-LAST:event_searchBackButtonActionPerformed
+
+    private void issueSearchBarFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_issueSearchBarFocusGained
+        if(issueSearchBar.getText().trim().toLowerCase().equals("search")){
+            issueSearchBar.setText("");
+            issueSearchBar.setForeground(Color.black);
+        }
+    }//GEN-LAST:event_issueSearchBarFocusGained
+
+    private void issueSearchBarFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_issueSearchBarFocusLost
+        if(issueSearchBar.getText().trim().toLowerCase().equals("search")||
+                issueSearchBar.getText().trim().equals("")){
+            issueSearchBar.setText("search");
+            issueSearchBar.setForeground(new Color(153,153,153));
+        }
+    }//GEN-LAST:event_issueSearchBarFocusLost
+
+    private void issueSearchBarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_issueSearchBarKeyPressed
+         if(evt.getKeyCode() == KeyEvent.VK_ENTER){ // if enter key is pressed at the search bar
+            SearchForm searchForm = new SearchForm(issueSearchBar.getText()); // go to the search form
+            searchForm.setVisible(true);
+            this.dispose(); // dispose this current form
+        }
+    }//GEN-LAST:event_issueSearchBarKeyPressed
+
     /**
      * @param args the command line arguments
      */
@@ -300,8 +368,9 @@ public class IssueDashboard extends javax.swing.JFrame {
     private javax.swing.JButton CreateNewIssue;
     private javax.swing.JLabel IssueDashboardLabel;
     private javax.swing.JTable IssueDashboardTable;
-    private javax.swing.JTextField IssueSearchBar;
+    private javax.swing.JTextField issueSearchBar;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton searchBackButton;
     // End of variables declaration//GEN-END:variables
 }

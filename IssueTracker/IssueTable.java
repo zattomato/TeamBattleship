@@ -34,7 +34,7 @@ public class IssueTable {
         this.issueTime = issueTime;
         this.issueAssignee = issueAssignee;
         this.issueCreatedBy = issueCreatedBy;
-        this.issueDescription = issueDescription;
+        this.issueDescription = description;
     }
 
     public int getIssueID() {

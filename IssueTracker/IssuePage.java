@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -26,6 +27,7 @@ public class IssuePage extends javax.swing.JFrame {
     private static int issueIDs;
     private static String projectNames;
     private static String[][] userInfo;
+    private JFrame referenceToSearchForm; // to refer to the JFrame of SearchForm.java
     /**
      * Creates new form IssuePage
      */
@@ -33,6 +35,13 @@ public class IssuePage extends javax.swing.JFrame {
         initComponents();
         this.setTitle("Issue Page");
         this.setLocationRelativeTo(null);
+    }
+    
+    // overloaded constructor to accept reference to SearchForm.java
+    public IssuePage(PreparedStatement st, int projectID,JFrame referenceToSearchForm) throws SQLException{ 
+        this(st,projectID); // calling the constructor with two arguments
+        this.referenceToSearchForm = referenceToSearchForm;
+        searchBackButton.setEnabled(true);
     }
     
     public IssuePage(PreparedStatement st, int projectID) throws SQLException{
@@ -128,6 +137,7 @@ public class IssuePage extends javax.swing.JFrame {
         description = new javax.swing.JTextArea();
         backButton = new javax.swing.JButton();
         updateButton = new javax.swing.JButton();
+        searchBackButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -318,6 +328,14 @@ public class IssuePage extends javax.swing.JFrame {
             }
         });
 
+        searchBackButton.setText("Back to Search");
+        searchBackButton.setEnabled(false);
+        searchBackButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchBackButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -335,7 +353,10 @@ public class IssuePage extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(updateButton)
                         .addGap(18, 18, 18)
-                        .addComponent(backButton))
+                        .addComponent(backButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(searchBackButton)
+                        .addGap(2, 2, 2))
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(45, 45, 45))
@@ -355,7 +376,8 @@ public class IssuePage extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(commentButton)
                     .addComponent(backButton)
-                    .addComponent(updateButton))
+                    .addComponent(updateButton)
+                    .addComponent(searchBackButton))
                 .addContainerGap(26, Short.MAX_VALUE))
         );
 
@@ -446,6 +468,11 @@ public class IssuePage extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_statusBoxActionPerformed
 
+    private void searchBackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBackButtonActionPerformed
+        referenceToSearchForm.setVisible(true); // set the SearchForm.java to true
+        this.dispose(); // dispose this form
+    }//GEN-LAST:event_searchBackButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -505,6 +532,7 @@ public class IssuePage extends javax.swing.JFrame {
     private javax.swing.JLabel name;
     private javax.swing.JLabel priority;
     private javax.swing.JLabel projectName;
+    private javax.swing.JButton searchBackButton;
     private javax.swing.JComboBox<String> statusBox;
     private javax.swing.JLabel tag;
     private javax.swing.JButton updateButton;
