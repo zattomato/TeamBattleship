@@ -53,6 +53,7 @@ public class IssueCreationForm extends javax.swing.JFrame {
         initComponents();
         this.setTitle("Issue Creation Page");
         this.setLocationRelativeTo(null);
+        UndoRedo UR = new UndoRedo(redo, undo , description);
     }
 
     /**
@@ -79,9 +80,11 @@ public class IssueCreationForm extends javax.swing.JFrame {
         projectNames = new javax.swing.JLabel();
         cancelButton = new javax.swing.JButton();
         createButton = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        description = new javax.swing.JTextPane();
         statusBox = new javax.swing.JComboBox<>();
+        undo = new javax.swing.JButton();
+        redo = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        description = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -141,14 +144,30 @@ public class IssueCreationForm extends javax.swing.JFrame {
             }
         });
 
-        jScrollPane1.setViewportView(description);
-
         statusBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Open", "In Progress", "Closed", "Resolved", "Reopened" }));
         statusBox.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 statusBoxActionPerformed(evt);
             }
         });
+
+        undo.setText("Undo");
+        undo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                undoActionPerformed(evt);
+            }
+        });
+
+        redo.setText("Redo");
+        redo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                redoActionPerformed(evt);
+            }
+        });
+
+        description.setColumns(20);
+        description.setRows(5);
+        jScrollPane2.setViewportView(description);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -159,15 +178,17 @@ public class IssueCreationForm extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(270, 270, 270)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(createButton)
-                        .addGap(18, 18, 18)
-                        .addComponent(cancelButton))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(20, 20, 20)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 759, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(undo)
+                                .addGap(18, 18, 18)
+                                .addComponent(redo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(createButton)
+                                .addGap(18, 18, 18)
+                                .addComponent(cancelButton))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -191,7 +212,8 @@ public class IssueCreationForm extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(priority)
-                                    .addComponent(projectNames, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+                                    .addComponent(projectNames, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jScrollPane2))))
                 .addContainerGap(21, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -225,12 +247,14 @@ public class IssueCreationForm extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jLabel6)
                             .addComponent(projectNames, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 303, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(createButton)
-                    .addComponent(cancelButton))
+                    .addComponent(cancelButton)
+                    .addComponent(undo)
+                    .addComponent(redo))
                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
@@ -347,6 +371,14 @@ public class IssueCreationForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_statusBoxActionPerformed
 
+    private void undoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_undoActionPerformed
+
+    private void redoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_redoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_redoActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -386,7 +418,7 @@ public class IssueCreationForm extends javax.swing.JFrame {
     private javax.swing.JTextField assignee;
     private javax.swing.JButton cancelButton;
     private javax.swing.JButton createButton;
-    private javax.swing.JTextPane description;
+    private javax.swing.JTextArea description;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -395,11 +427,13 @@ public class IssueCreationForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextField name;
     private javax.swing.JTextField priority;
     private javax.swing.JLabel projectNames;
+    private javax.swing.JButton redo;
     private javax.swing.JComboBox<String> statusBox;
     private javax.swing.JTextField tag;
+    private javax.swing.JButton undo;
     // End of variables declaration//GEN-END:variables
 }

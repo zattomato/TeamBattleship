@@ -399,7 +399,7 @@ public class IssuePage extends javax.swing.JFrame {
 
     private void commentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentButtonActionPerformed
         //go to make Comment Page
-        CommentPage commentPage = new CommentPage(Integer.valueOf(projectIDs), Integer.valueOf(issueIDs));
+        CommentPage commentPage = new CommentPage(projectIDs, issueIDs);
         commentPage.setVisible(true); 
         commentPage.setLocationRelativeTo(null);
         // close Issue Creation Form
@@ -408,7 +408,7 @@ public class IssuePage extends javax.swing.JFrame {
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         //go to make Issue Dashboard Form
-        IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectIDs));
+        IssueDashboard issueDashboard = new IssueDashboard(projectIDs);
         issueDashboard.setVisible(true); 
         issueDashboard.setLocationRelativeTo(null);
         // close Issue Creation Form
@@ -419,13 +419,7 @@ public class IssuePage extends javax.swing.JFrame {
         int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to submit?", "Alert!",JOptionPane.YES_NO_OPTION); // prompt dialog panel
             if(option==0){ // if yes
                 try{
-                    String name = this.name.getText();
-                    String creator = this.creator.getText();
-                    String assignee = this.assignee.getText();
                     String status = statusBox.getSelectedItem().toString();
-                    String tag= this.tag.getText();
-                    String priority = this.priority.getText();
-                    String description = this.description.getText(); 
                     System.out.println(status);
                     //make sure the the status is changed
                     if(status.equals(userInfo[3][1])){
@@ -442,7 +436,7 @@ public class IssuePage extends javax.swing.JFrame {
                             String sql = "UPDATE issue SET issueStatus = '"+status+"' WHERE issueID = "+issueIDs;
                             if(st.executeUpdate(sql) != 0){
                                 JOptionPane.showMessageDialog(null,"Your issue has been updated");
-                                IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectIDs));
+                                IssueDashboard issueDashboard = new IssueDashboard(projectIDs);
                                 issueDashboard.setVisible(true); 
                                 issueDashboard.setLocationRelativeTo(null);
                                 // close Issue Creation Form
