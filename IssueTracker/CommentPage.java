@@ -5,146 +5,304 @@
  */
 package IssueTracker;
 
-import ConnectionToDatabase.Cnx;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
 import java.sql.Timestamp;
+import ConnectionToDatabase.Cnx;
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.sql.PreparedStatement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 /**
  *
  * @author User
  */
-public class CommentPage extends javax.swing.JFrame {
-    private static int projectID;
-    private static int issueID;
+public class CommentPage extends javax.swing.JFrame implements MouseListener {
+    private static int projectIDs;
+    private static int issueIDs;
+    private static int commentIDs;
+    private static String text;
+    private static Timestamp datetime;
+    private static String username;
+    private JTextArea addComment;
+    private JTextArea commentCreator;
+    private JTextArea[] jTextArea;
+    private JButton undoButton;
+    private JButton redoButton;
+    private JButton submitButton;
+    private JButton[] jButton;
+    private JScrollPane scrollAddComment;
+    private JScrollPane[] jScrollPane;
+    private JLabel addYourName;
+    private JLabel[] jLabelID;
+    private JLabel[] jLabelcommentID;
+    private JLabel[] jLabelCreatedby;
+    private JLabel[] jLabelCreator ;
+    private JLabel[] jLabelCreatedon ;
+    private JLabel[] jLabelDate;
+    private int index = 0;
+    
     /**
-     * Creates new form CommentPage
+     * Creates new form 
      */
     public CommentPage() {
         initComponents();
-        this.setLocationRelativeTo(null);//to let the form adjust to the center of our computer screen
+        this.setTitle("Comment Page");
+        this.setLocationRelativeTo(null);
     }
-    /**
-     * Creates new form CommentPage
-     * @param projectID and issueID
-     */
-    public CommentPage(int projectID, int issueID) {
-        this.projectID = projectID;
-        this.issueID = issueID;
-        initComponents();
-        this.setLocationRelativeTo(null);//to let the form adjust to the center of our computer screen
-        insertTableContents(projectID,issueID); // show the contents of selected table 'comment' from database based on projectID and issueID 
-    }
-    /**
-     * method to store data from database into ArrayList before inserting it into table GUI
-     * CommentTable class is defined in the same package
-     * @return ArrayList of type CommentTable
-     * @param projectID and issueID
-     */
-    public ArrayList<CommentTable> createList(int projID, int issID){
-        
-            ArrayList<CommentTable> list = new ArrayList<>();
-        try {
-            Cnx connectionClass = new Cnx(); //establish connection
-            Connection connection = connectionClass.getConnection(); //establish connection
+    public CommentPage(int projectID, int issueID){
+        try{
+        Cnx connectionClass = new Cnx(); //establish connection
+        Connection connection = connectionClass.getConnection(); //establish connection
+        Statement initialStatement = connection.createStatement();
+        String countComments = "select count(*) from comment where projectID = " +projectID + "and issueID = " +issueID;
+        ResultSet countCommentsResult = initialStatement.executeQuery(countComments);
+        countCommentsResult.next();
+        int count = countCommentsResult.getInt("");
+        init(count);
+        this.setTitle("Comment Page");
+        this.setLocationRelativeTo(null);
+        this.projectIDs = projectID;
+        this.issueIDs = issueID;
             
-            int commentID;
-            int issueID;
-            int projectID;
-            String text;
-            Timestamp datetime;
-            String username;
-            
-            String query1 = "SELECT* FROM comment WHERE projectID = " +projID + " and issueID = " + issID; //query to select all from selected row in table named 'comment'
+            String query = "SELECT* FROM comment WHERE projectID = " +projectID + " and issueID = " + issueID;
             Statement st = connection.createStatement(); //create a statement using connection that already establish
-            ResultSet result1 = st.executeQuery(query1); // execute query1 and store the result into result1
+            ResultSet result = st.executeQuery(query); // execute query and store the result into result
+            
+            String query1 = "SELECT* FROM comment WHERE projectID = " +projectID + " and issueID = " + issueID;
+            Statement st1 = connection.createStatement(); //create a statement using connection that already establish
+            ResultSet result1 = st1.executeQuery(query); // execute query1 and store the result into result1
             
             while(result1.next()){
-                commentID = result1.getInt("commentID"); //get the data inside column 'commentID'(one of the column for table 'comment') and store it into variable commentID
-                issueID = result1.getInt("issueID");
-                projectID = result1.getInt("projectID");
-                text = result1.getString("text");
-                datetime = result1.getTimestamp("date");
-                username = result1.getString("userName");
-                
-                list.add(new CommentTable(commentID,issueID,projectID,text,datetime,username)); // instantiate CommentTable object and insert it into ArrayList
-                
+                index++; //get total number of comments in comment table in database 
             }
             
-        } catch (SQLException ex) {
+            jLabelID = new JLabel[index];
+            jLabelcommentID = new JLabel[index];
+            jLabelCreatedby = new JLabel[index];
+            jLabelCreator = new JLabel[index];
+            jLabelCreatedon = new JLabel[index];
+            jLabelDate = new JLabel[index];
+                    
+            jTextArea = new JTextArea[index];
+            jButton = new JButton[index];
+            jScrollPane = new JScrollPane[index];
+            
+
+            int gap = 0;
+            int i = 0;
+            
+            while(result.next()){
+                commentIDs = result.getInt("commentID"); //get the data inside column 'commentID'(one of the column for table 'comment') and store it into variable commentID
+                issueIDs = result.getInt("issueID");
+                projectIDs = result.getInt("projectID");
+                text = result.getString("text");
+                datetime = result.getTimestamp("date");
+                username = result.getString("userName");
+
+                jLabelID[i] = new JLabel("ID : ");//create label named "ID" 
+                jLabelID[i].setBounds(50, 200+gap, 100, 23);
+                jPanel1.add(jLabelID[i]);
+
+                jLabelcommentID[i] = new JLabel(String.valueOf(commentIDs));
+                jLabelcommentID[i].setBounds(100, 200+gap, 100, 23);
+                jPanel1.add(jLabelcommentID[i]);
+
+                jLabelCreatedby[i] = new JLabel("Created by : ");
+                jLabelCreatedby[i].setBounds(50, 230+gap, 100, 23);
+                jPanel1.add(jLabelCreatedby[i]);
+
+                jLabelCreator[i] = new JLabel(username);
+                jLabelCreator[i].setBounds(150, 230+gap, 100, 23);
+                jPanel1.add(jLabelCreator[i]);
+
+                jLabelCreatedon[i] = new JLabel("Created on : ");
+                jLabelCreatedon[i].setBounds(50, 250+gap, 100, 23);
+                jPanel1.add(jLabelCreatedon[i]);
+
+                String dates = datetime.toString();
+                jLabelDate[i] = new JLabel(dates);
+                jLabelDate[i].setBounds(150, 250+gap, 150, 23);
+                jPanel1.add(jLabelDate[i]);
+
+                jTextArea[i] = new JTextArea(text);
+                jTextArea[i].setBounds(300, 200+gap, 450, 100);
+                jTextArea[i].setWrapStyleWord(true);
+                jTextArea[i].setLineWrap(true);
+                jTextArea[i].setEditable(false);//set text area not editable
+                
+                jScrollPane[i] = new JScrollPane(); 
+                jScrollPane[i].setViewportView(jTextArea[i]);
+                jScrollPane[i].setBounds(300, 200+gap, 450, 100);
+                jPanel1.add(jScrollPane[i]);//add scroll pane on text area
+
+                jButton[i] = new JButton("See reaction");
+                jButton[i].setBounds(800, 200+gap, 100, 23);
+                jPanel1.add(jButton[i]);
+                System.out.println("i : " + i);
+                
+                gap+= 100;
+                i++;
+                
+            }
+            addComment();
+            setUpButtonListener();
+        }
+        catch (SQLException ex) {
             Logger.getLogger(CommentPage.class.getName()).log(Level.SEVERE, null, ex); // will just print the errors to our console
         }
-        return list; //return the ArrayList
+        UndoRedo ur = new UndoRedo(redoButton,undoButton,addComment);
     }
-    /**
-     * method to insert data stored inside ArrayList to the table GUI
-     * @param projectID and issueID
-     */
-    public void insertTableContents(int projectID, int issueID){
-        ArrayList<CommentTable> list = createList(projectID,issueID); // object referring to the ArrayList created inside createList();
-        DefaultTableModel tableModel = (DefaultTableModel)commentTable.getModel(); // get the model of table GUI
-        Object[] row = new Object[4];
-        for(int i = 0; i<list.size(); i++){  
-            row[0] = list.get(i).getCommentID(); //assign the commentID data located at a specific index in arrayList to row[0]
-            row[1] = list.get(i).getText();
-            row[2] = list.get(i).getDatetime();
-            row[3] = list.get(i).getUsername();
-            tableModel.addRow(row); //inserting data into specific row of table GUI
+    public void setUpButtonListener(){
+        ActionListener buttonListener = new ActionListener(){
+            public void actionPerformed(ActionEvent e){
+                for (int i=0;i<index;i++){
+                    if(e.getSource() == jButton[i]){
+                        goToReactionForm(i+1,issueIDs,projectIDs);
+                        break;
+                    }
+                }
+                if (e.getSource() == submitButton){
+                    submitComment();
+                }
+            }
+        };
+        for(int i=0;i<index;i++){
+            jButton[i].addActionListener(buttonListener);
         }
+        submitButton.addActionListener(buttonListener);
     }
+    public void goToReactionForm(int commentID,int issueID,int projectID){
+        ReactionForm reactPage = new ReactionForm(commentID,issueID,projectID);
+        this.dispose();//dispose the current ProjectDashboard GUI
+        reactPage.setVisible(true);
+    }
+    public void submitComment(){
+        int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to submit?", "Alert!",JOptionPane.YES_NO_OPTION); // prompt dialog panel
+            if(option==0){ // if yes
+                try{
+
+                    String description = this.addComment.getText(); 
+                    String name = this.commentCreator.getText();
+                    
+                    //check if any field is empty
+                    if(name.equals("")||description.equals("")){
+                        JOptionPane.showMessageDialog(null, "ALERT!Please enter all requirement field");
+                        throw new Exception("");
+                    }
+
+                    try{
+
+                        Cnx connectionClass = new Cnx(); // create connection 
+                        Connection connection = connectionClass.getConnection(); //create connection
+
+                        Date dt = new java.util.Date();
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss");
+
+                        String currentTime = sdf.format(dt);    // get current date and time
+
+                        Statement st1 = connection.createStatement(); // create statement from the established connection
+                        Statement st2 = connection.createStatement();
+
+                        String query1 = "SELECT MAX(commentID) FROM comment ";   // selecting the highest id currently inside database
+                        ResultSet result1 = st1.executeQuery(query1); // execute query1 and store it inside result1
+                        result1.next();
+                        int commentID = result1.getInt("") + 1; // adding 1 to the highest id inside database and assign it to current issueID to be created
+                        //String sql = "INSERT INTO comment VALUES ("+commentID+","+issueIDs+",'"+projectIDs+"','"+description+"','"+currentTime+"','"+name+")";
+                        String sql = "INSERT INTO comment VALUES (" + "'" +commentID + "','" +issueIDs + "','" + projectIDs + "','" + description + "','" + currentTime + "','" + name + "')"; 
+                        if(st2.executeUpdate(sql) != 0){
+                            JOptionPane.showMessageDialog(null,"Your comment has been added");
+                            CommentPage newCommentPage = new CommentPage(Integer.valueOf(projectIDs),Integer.valueOf(issueIDs));
+                            newCommentPage.setVisible(true); 
+                            newCommentPage.setLocationRelativeTo(null);
+                            // close previous Comment Page 
+                            this.dispose();
+                        }
+                        else{
+                            JOptionPane.showMessageDialog(null,"Check your information");
+                        }
+
+                    }//end second try
+                    catch (SQLException ex) {
+                        Logger.getLogger(ProjectDashboard.class.getName()).log(Level.SEVERE, null, ex); // print to the console if sql exceptions occurs
+                    } 
+                }//end first try
+                catch(Exception e){
+
+                }
+            }
+    }
+    
+    public void addComment(){
+        addYourName = new JLabel("Name : ");
+        addYourName.setBounds(50, 70, 100, 23);
+        jPanel1.add(addYourName);
+        
+        commentCreator = new JTextArea();
+        commentCreator.setBounds(100, 70, 100, 23);
+        jPanel1.add(commentCreator);
+        
+        addComment = new JTextArea("Add your comment here");
+        addComment.setForeground(Color.LIGHT_GRAY);
+        addComment.setBounds(300, 70, 450, 100);
+        addComment.setWrapStyleWord(true);
+        addComment.setLineWrap(true);
+        addComment.setOpaque(true);
+        addComment.addMouseListener(this);
+        jPanel1.add(addComment);
+        
+        scrollAddComment = new JScrollPane(); 
+        scrollAddComment.setViewportView(addComment);
+        scrollAddComment.setBounds(300, 70, 450, 100);
+        jPanel1.add(scrollAddComment);
+        
+        undoButton = new JButton("Undo");
+        undoButton.setBounds(100, 100, 80, 23);
+        jPanel1.add(undoButton);
+        redoButton = new JButton("Redo");
+        redoButton.setBounds(100, 120, 80, 23);
+        jPanel1.add(redoButton);
+        submitButton = new JButton("Submit");
+        submitButton.setBounds(800, 70, 100, 23);
+        jPanel1.add(submitButton);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
      * regenerated by the Form Editor.
      */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
-
+    public void init(int count){
+        jScrollPane2 = new javax.swing.JScrollPane();
         jPanel1 = new javax.swing.JPanel();
-        commentTitle = new javax.swing.JLabel();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        commentTable = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
         backButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        commentTitle.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
-        commentTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        commentTitle.setText("Comments");
-        commentTitle.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        commentTitle.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        jScrollPane2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jScrollPane2.setMaximumSize(new java.awt.Dimension(100000, 100000));
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(5000, 5000));
 
-        commentTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-                "ID", "Text", "Created on", "Created by"
-            }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
-        commentTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                commentTableMouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(commentTable);
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Comment Page");
 
         backButton.setText("Back");
         backButton.addActionListener(new java.awt.event.ActionListener() {
@@ -158,59 +316,107 @@ public class CommentPage extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(372, 372, 372)
-                .addComponent(commentTitle)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(179, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(backButton)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 572, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(179, Short.MAX_VALUE))
+                .addGap(20, 20, 20)
+                .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(265, 265, 265)
+                .addComponent(jLabel1)
+                .addContainerGap(616, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(39, 39, 39)
-                .addComponent(commentTitle)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(backButton)
-                .addContainerGap(114, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(backButton)))
+                .addContainerGap(150 * count, Short.MAX_VALUE))
         );
+
+        jScrollPane2.setViewportView(jPanel1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1012, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 530, Short.MAX_VALUE)
+        );
+
+        pack();
+    }
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        backButton = new javax.swing.JButton();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+        jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        jScrollPane2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jScrollPane2.setMaximumSize(new java.awt.Dimension(100000, 100000));
+        jScrollPane2.setPreferredSize(new java.awt.Dimension(5000, 5000));
+
+        jLabel1.setFont(new java.awt.Font("Times New Roman", 1, 36)); // NOI18N
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Comment Page");
+
+        backButton.setText("Back");
+        backButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                backButtonActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addComponent(backButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(265, 265, 265)
+                .addComponent(jLabel1)
+                .addContainerGap(616, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(24, 24, 24)
+                        .addComponent(jLabel1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addComponent(backButton)))
+                .addContainerGap(490, Short.MAX_VALUE))
+        );
+
+        jScrollPane2.setViewportView(jPanel1);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 1012, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 530, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-    
-    
-   /**
-     * method to go to React Page
-     * @param evt (when the event occur, button is clicked) 
-     */
-    private void commentTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_commentTableMouseClicked
-        int row = commentTable.getSelectedRow();
-        TableModel tableModel = commentTable.getModel();
-        int commentID = (int)tableModel.getValueAt(row,0);
-        ReactionForm reactPage = new ReactionForm(commentID,issueID,projectID);
-        this.dispose();//dispose the current ProjectDashboard GUI
-        reactPage.setVisible(true);
-    }//GEN-LAST:event_commentTableMouseClicked
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         try{
@@ -218,15 +424,16 @@ public class CommentPage extends javax.swing.JFrame {
             String query = "SELECT * FROM issue WHERE issueID = ? AND projectID = ?" ;
             Cnx connectionClass = new Cnx(); //create connection
             st = connectionClass.getConnection().prepareStatement(query);
-            st.setInt(1, issueID);
-            st.setInt(2, projectID);
-            IssuePage form = new IssuePage(st, projectID);
+            st.setInt(1, issueIDs);
+            st.setInt(2, projectIDs);
+            IssuePage form = new IssuePage(st, projectIDs);
             form.setVisible(true);
             form.pack();
             form.setLocationRelativeTo(null);
             // close Issue Dashboard Form
             this.dispose();
-        }catch (SQLException ex) {
+        }
+        catch (SQLException ex) {
         }
     }//GEN-LAST:event_backButtonActionPerformed
 
@@ -256,6 +463,7 @@ public class CommentPage extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(CommentPage.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -267,9 +475,36 @@ public class CommentPage extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
-    private javax.swing.JTable commentTable;
-    private javax.swing.JLabel commentTitle;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        addComment.setText("");
+        addComment.setForeground(Color.BLACK);
+        
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }
