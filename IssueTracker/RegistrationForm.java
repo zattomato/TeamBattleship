@@ -273,13 +273,14 @@ public class RegistrationForm extends javax.swing.JFrame {
                 
                 Connection connection = connectionclass.getConnection();
                 Statement st3 = connection.createStatement();
-                String query1=" SELECT MAX(userID) FROM [users] ";
+                String query1=" SELECT MAX(userID) FROM [users] "; //get the maximum id number in database
                 ResultSet rs1 = st3.executeQuery(query1);
                 rs1.next();
-                ID = rs1.getInt("") + 1;
+                ID = rs1.getInt("") + 1; //create a number id for new user
                 
                 String sql = "INSERT INTO [users] VALUES (?,?,?,?,?,?)";
                 
+                //Insert all information into database
                 st = connectionclass.getConnection().prepareStatement(sql);
                 st.setInt(1, ID);
                 st.setString(2, name);

@@ -50,6 +50,7 @@ public class ReactionForm extends javax.swing.JFrame {
         reactionNum();
     }
     
+    //Get the comment from database to be displayed
     public void getComment(){
         try{
             PreparedStatement st;
@@ -67,6 +68,7 @@ public class ReactionForm extends javax.swing.JFrame {
         }
     }
     
+    //Get the total number of each reaction recorded from database
     public void reactionNum(){
         
         Statement st;
@@ -223,6 +225,7 @@ public class ReactionForm extends javax.swing.JFrame {
                 st_.executeUpdate();
             }
             
+            //Check if there is already existing row of sad reaction for the speacific commentID, issueID and projectID
             String check2 = "SELECT * FROM react WHERE reaction = ? AND commentID = ? AND issueID = ? AND projectID = ?";
             st2 = connection.prepareStatement(check2);
             st2.setString(1, sd);
@@ -231,6 +234,7 @@ public class ReactionForm extends javax.swing.JFrame {
             st2.setInt(4, pID);
             rs2 = st2.executeQuery();
             if(!rs2.next()){
+                //initialize to 0 if there is none
                 String sql = "INSERT INTO react VALUES(?,?,?,?,?)";
                 PreparedStatement st_2;
                 st_2 = connection.prepareStatement(sql);
@@ -242,6 +246,7 @@ public class ReactionForm extends javax.swing.JFrame {
                 st_2.executeUpdate();
             }
             
+            //Check if there is already existing row of angry reaction for the speacific commentID, issueID and projectID
             String check3 = "SELECT * FROM react WHERE reaction = ? AND commentID = ? AND issueID = ? AND projectID = ?";
             st3 = connection.prepareStatement(check3);
             st3.setString(1, ag);
@@ -250,6 +255,7 @@ public class ReactionForm extends javax.swing.JFrame {
             st3.setInt(4, pID);
             rs3 = st3.executeQuery();
             if(!rs3.next()){
+                //initialize to 0 if there is none
                 String sql = "INSERT INTO react VALUES(?,?,?,?,?)";
                 PreparedStatement st_3;
                 st_3 = connection.prepareStatement(sql);
