@@ -29,6 +29,8 @@ public class ChatForm extends javax.swing.JFrame {
     static String userName = "User";// user is the default name
     static int status = 0; // to exit the recursive function since this.dispose did not stop the execution
     static int initiateRefresh = 0; // use to determine whether refresh has been called
+    static boolean autoScroll = true; // to determine whether autoScroll is enabled or not
+    static int toggleCount = 0; // odd number when autoScroll is pushed and even when autoScroll is released
     /**
      * Creates new form ChatForm
      */
@@ -501,11 +503,19 @@ public class ChatForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jPanel2MouseMoved
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
-        // TODO add your handling code here:
-        jScrollPane1.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
-        public void adjustmentValueChanged(AdjustmentEvent e) {
-        e.getAdjustable().setValue(e.getAdjustable().getMaximum());
-        }});
+            toggleCount++;
+            if(toggleCount%2==0){
+                autoScroll = false;
+                toggleCount = 0;
+            }
+            else
+                autoScroll = true;
+            jScrollPane1.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {
+            public void adjustmentValueChanged(AdjustmentEvent e) {
+            if(autoScroll){
+            e.getAdjustable().setValue(e.getAdjustable().getMaximum());
+            }
+            }});
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
     /**
@@ -549,6 +559,7 @@ public class ChatForm extends javax.swing.JFrame {
                 }
             }
         });
+        initiateRefresh = 1;
         Thread.sleep(4000); // wait for a while for the form to pop up
         try {
             refresh(); // call refresh after the form has been instantiated
