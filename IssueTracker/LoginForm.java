@@ -11,6 +11,7 @@ import java.awt.Image;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
@@ -189,7 +190,7 @@ public class LoginForm extends javax.swing.JFrame {
             rs=st.executeQuery();
             if (rs.next()) {
                 //got to project dashboard
-                ProjectDashboard PD = new ProjectDashboard();
+                ProjectDashboard PD = new ProjectDashboard(rs.getString("name"));
                 PD.setVisible(true);
                 PD.pack();
                 PD.setLocationRelativeTo(null);

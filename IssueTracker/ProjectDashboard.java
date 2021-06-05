@@ -2,6 +2,7 @@
 package IssueTracker;
 
 import ConnectionToDatabase.Cnx;
+import static IssueTracker.ChatForm.refresh;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -17,6 +18,11 @@ public class ProjectDashboard extends javax.swing.JFrame {
     /**
      * Creates new form ProjectDashboard
      */
+    String userName = "username";// temporary can be deleted later
+    public ProjectDashboard(String userName){
+       this();
+       this.userName = userName;
+    }
     public ProjectDashboard() {
         initComponents();
         this.setLocationRelativeTo(null); //to let the form adjust to the center of our computer screen
@@ -42,7 +48,7 @@ public class ProjectDashboard extends javax.swing.JFrame {
             String description;
             int issueCount;
             
-            String query1 = "SELECT* FROM project"; //query to select all from table named 'project'
+            String query1 = "SELECT* FROM project order by projectID"; //query to select all from table named 'project'
             String query2;
             Statement st = connection.createStatement(); //create a statement using connection that already establish
             Statement st2 = connection.createStatement();
@@ -105,6 +111,7 @@ public class ProjectDashboard extends javax.swing.JFrame {
         createProject = new javax.swing.JButton();
         importExportFormButton = new javax.swing.JButton();
         searchTextField = new javax.swing.JTextField();
+        chatButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -180,6 +187,14 @@ public class ProjectDashboard extends javax.swing.JFrame {
             }
         });
 
+        chatButton.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        chatButton.setText("Chat Room");
+        chatButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chatButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -201,6 +216,10 @@ public class ProjectDashboard extends javax.swing.JFrame {
                         .addGap(188, 188, 188)
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(327, 327, 327)
+                .addComponent(chatButton)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,7 +233,9 @@ public class ProjectDashboard extends javax.swing.JFrame {
                     .addComponent(importExportFormButton))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(134, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(chatButton)
+                .addContainerGap(87, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -289,6 +310,20 @@ public class ProjectDashboard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_searchTextFieldFocusLost
 
+    private void chatButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chatButtonActionPerformed
+        try {
+            ChatForm chatForm = new ChatForm(userName);
+            chatForm.setVisible(true);
+            this.dispose();
+        } catch (SQLException ex) {
+            Logger.getLogger(ProjectDashboard.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ProjectDashboard.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
+    }//GEN-LAST:event_chatButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -325,6 +360,7 @@ public class ProjectDashboard extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton chatButton;
     private javax.swing.JButton createProject;
     private javax.swing.JButton importExportFormButton;
     private javax.swing.JLabel jLabel1;
