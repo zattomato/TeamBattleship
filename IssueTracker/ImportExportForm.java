@@ -295,7 +295,15 @@ public class ImportExportForm extends javax.swing.JFrame {
             while(true){
                 while(true){
                     try{
-                        String insertComment = "insert into comment\n" +
+                        String insertComment = 
+                        "declare @tmp table (commentID int not null,issueID int,projectID int, text nvarchar(MAX), date datetime, userName nvarchar(20))\n" +
+                        "declare @tmpcommentID int\n" +
+                        "declare @tmpissueID int\n" +
+                        "declare @tmpprojectID int\n" +
+                        "declare @tmptext nvarchar(max)\n" +
+                        "declare @tmpdate datetime\n" +
+                        "declare @tmpuserName nvarchar(20)"+
+                        "insert into @tmp\n" +
                         "select * from OPENJSON (@json, '$.projects["+i+"]')\n" +
                         "			with(\n" +
                         "			commentID int '$.issues["+j+"].comments["+k+"].comment_id',\n" +
@@ -304,7 +312,15 @@ public class ImportExportForm extends javax.swing.JFrame {
                         "			text nvarchar(max) '$.issues["+j+"].comments["+k+"].text',\n" +
                         "			date datetime '$.issues["+j+"].comments["+k+"].timestamp',\n" +
                         "			userName nvarchar(20) '$.issues["+j+"].comments["+k+"].user'\n" +
-                        "			)";
+                        "			)\n"+
+                        "SET @tmpcommentID = (select commentID from @tmp )\n" +
+                        "SET @tmpissueID = (select issueID from @tmp)\n" +
+                        "SET @tmpprojectID = (select projectID from @tmp)\n" +
+                        "SET @tmptext = (select text from @tmp)\n" +
+                        "SET @tmpdate = (select date from @tmp)\n" +
+                        "SET @tmpuserName = (select userName from @tmp)\n" +
+                        "delete from @tmp\n" +
+                        "insert into comment values (@tmpcommentID,@tmpissueID,@tmpprojectID, @tmptext, @tmpdate, @tmpuserName, null)";
                         success = st1.executeUpdate(initializeSQLVariable+insertComment); //insert information into 'comment'
                         if(success>0) // if success update index k
                             k++;
@@ -456,6 +472,7 @@ public class ImportExportForm extends javax.swing.JFrame {
                                     "	on [comments].[issueID] = [issues].[issueID] and [comments].[projectID] = [p].projectID\n" +
                                     "INNER JOIN react\n" +
                                     "	on [react].commentID = [comments].[commentID] and [react].[issueID] = [issues].[issueID] and [react].[projectID] = [p].projectID\n" +
+                                    "order by [p].[projectID], [issues].[issueID], [comments].[commentID]\n"+
                                     "for JSON AUTO";
         
         
@@ -505,7 +522,7 @@ public class ImportExportForm extends javax.swing.JFrame {
         JSONText = projectDetails + usersDetails; // combine the two string to make a complete JSON text to be printed out to .json file
         JSONText = JSONText.replaceAll("\\\\/", "/"); // extra thing to put because java somehow escape the forward slash at the hyperlinks inside JSONText for example https://streamable.com/hkyg3 becomes https:\/\/streamable.com\/hkyg3
 
-        PrintWriter out = new PrintWriter(new FileOutputStream( new File("importedData.json"))); // create a new file inside project folder with .json extension
+        PrintWriter out = new PrintWriter(new FileOutputStream( new File("exportedData.json"))); // create a new file inside project folder with .json extension
         out.println(JSONText); // output the JSONText to .json file
         out.close(); // close the PrintWriter
         
