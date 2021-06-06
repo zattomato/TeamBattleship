@@ -16,12 +16,20 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
@@ -37,13 +45,16 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
     private static String text;
     private static Timestamp datetime;
     private static String username;
+    private byte[] picture = null;
     private JTextArea addComment;
     private JTextArea commentCreator;
     private JTextArea[] jTextArea;
     private JButton undoButton;
     private JButton redoButton;
     private JButton submitButton;
+    private JButton uploadPictureButton;
     private JButton[] jButton;
+    private JButton[] jPictureButton;
     private JScrollPane scrollAddComment;
     private JScrollPane[] jScrollPane;
     private JLabel addYourName;
@@ -54,6 +65,7 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
     private JLabel[] jLabelCreatedon ;
     private JLabel[] jLabelDate;
     private int index = 0;
+    private ArrayList<Integer> indexOfJPictureButton = new ArrayList<>();
     
     /**
      * Creates new form 
@@ -65,6 +77,7 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
     }
     public CommentPage(int projectID, int issueID){
         try{
+        picture = null;
         Cnx connectionClass = new Cnx(); //establish connection
         Connection connection = connectionClass.getConnection(); //establish connection
         Statement initialStatement = connection.createStatement();
@@ -78,11 +91,11 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
         this.projectIDs = projectID;
         this.issueIDs = issueID;
             
-            String query = "SELECT* FROM comment WHERE projectID = " +projectID + " and issueID = " + issueID;
+            String query = "SELECT* FROM comment WHERE projectID = " +projectID + " and issueID = " + issueID +" order by commentID";
             Statement st = connection.createStatement(); //create a statement using connection that already establish
             ResultSet result = st.executeQuery(query); // execute query and store the result into result
             
-            String query1 = "SELECT* FROM comment WHERE projectID = " +projectID + " and issueID = " + issueID;
+            String query1 = "SELECT* FROM comment WHERE projectID = " +projectID + " and issueID = " + issueID+" order by commentID";
             Statement st1 = connection.createStatement(); //create a statement using connection that already establish
             ResultSet result1 = st1.executeQuery(query); // execute query1 and store the result into result1
             
@@ -99,6 +112,7 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
                     
             jTextArea = new JTextArea[index];
             jButton = new JButton[index];
+            jPictureButton = new JButton[index];
             jScrollPane = new JScrollPane[index];
             
 
@@ -112,6 +126,7 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
                 text = result.getString("text");
                 datetime = result.getTimestamp("date");
                 username = result.getString("userName");
+                picture = result.getBytes("images");
 
                 jLabelID[i] = new JLabel("ID : ");//create label named "ID" 
                 jLabelID[i].setBounds(50, 200+gap, 100, 23);
@@ -152,6 +167,14 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
                 jButton[i] = new JButton("See reaction");
                 jButton[i].setBounds(800, 200+gap, 100, 23);
                 jPanel1.add(jButton[i]);
+                
+                if(picture!=null){
+                    jPictureButton[i] = new JButton("picture");
+                    jPictureButton[i].setBounds(800,220+gap,100,23);
+                    jPanel1.add(jPictureButton[i]);
+                    indexOfJPictureButton.add(i);
+                }
+                picture = null;
                 System.out.println("i : " + i);
                 
                 gap+= 100;
@@ -174,6 +197,10 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
                         goToReactionForm(i+1,issueIDs,projectIDs);
                         break;
                     }
+                    else if(e.getSource() == jPictureButton[i]){
+                       goToPictureForm(i+1,issueIDs,projectIDs);
+                       break;
+                    }
                 }
                 if (e.getSource() == submitButton){
                     submitComment();
@@ -183,12 +210,20 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
         for(int i=0;i<index;i++){
             jButton[i].addActionListener(buttonListener);
         }
+        for(int i=0; i<indexOfJPictureButton.size();i++){
+            jPictureButton[indexOfJPictureButton.get(i)].addActionListener(buttonListener);
+        }
         submitButton.addActionListener(buttonListener);
     }
     public void goToReactionForm(int commentID,int issueID,int projectID){
         ReactionForm reactPage = new ReactionForm(commentID,issueID,projectID);
         this.dispose();//dispose the current ProjectDashboard GUI
         reactPage.setVisible(true);
+    }
+    
+    public void goToPictureForm(int commentID, int issueID, int projectID){
+        PictureForm pictureForm = new PictureForm(commentID, issueID, projectID);
+        pictureForm.setVisible(true);
     }
     public void submitComment(){
         int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to submit?", "Alert!",JOptionPane.YES_NO_OPTION); // prompt dialog panel
@@ -216,15 +251,22 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
                         String currentTime = sdf.format(dt);    // get current date and time
 
                         Statement st1 = connection.createStatement(); // create statement from the established connection
-                        Statement st2 = connection.createStatement();
 
-                        String query1 = "SELECT MAX(commentID) FROM comment ";   // selecting the highest id currently inside database
+                        String query1 = "SELECT MAX(commentID) FROM comment where issueID = "+issueIDs+" and projectID = " +projectIDs;   // selecting the highest id currently inside database
                         ResultSet result1 = st1.executeQuery(query1); // execute query1 and store it inside result1
                         result1.next();
                         int commentID = result1.getInt("") + 1; // adding 1 to the highest id inside database and assign it to current issueID to be created
                         //String sql = "INSERT INTO comment VALUES ("+commentID+","+issueIDs+",'"+projectIDs+"','"+description+"','"+currentTime+"','"+name+")";
-                        String sql = "INSERT INTO comment VALUES (" + "'" +commentID + "','" +issueIDs + "','" + projectIDs + "','" + description + "','" + currentTime + "','" + name + "')"; 
-                        if(st2.executeUpdate(sql) != 0){
+                        String sql = "INSERT INTO comment VALUES (?,?,?,?,?,?,?)"; 
+                        PreparedStatement st2 = connection.prepareStatement(sql);
+                        st2.setInt(1, commentID);
+                        st2.setInt(2, issueIDs);
+                        st2.setInt(3, projectIDs);
+                        st2.setString(4, description);
+                        st2.setString(5, currentTime);
+                        st2.setString(6, name);
+                        st2.setBytes(7, picture);
+                        if(st2.executeUpdate() != 0){
                             JOptionPane.showMessageDialog(null,"Your comment has been added");
                             CommentPage newCommentPage = new CommentPage(Integer.valueOf(projectIDs),Integer.valueOf(issueIDs));
                             newCommentPage.setVisible(true); 
@@ -236,11 +278,11 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
                             JOptionPane.showMessageDialog(null,"Check your information");
                         }
 
-                    }//end second try
+                    }//end second try//end second try
                     catch (SQLException ex) {
                         Logger.getLogger(ProjectDashboard.class.getName()).log(Level.SEVERE, null, ex); // print to the console if sql exceptions occurs
                     } 
-                }//end first try
+                }//end first try//end first try
                 catch(Exception e){
 
                 }
@@ -279,6 +321,14 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
         submitButton = new JButton("Submit");
         submitButton.setBounds(800, 70, 100, 23);
         jPanel1.add(submitButton);
+        uploadPictureButton = new JButton("Choose Pic");
+        uploadPictureButton.setBounds(800,90,100,23);
+        uploadPictureButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                uploadPictureButtonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(uploadPictureButton);
     }
 
     /**
@@ -417,7 +467,54 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
+    private void uploadPictureButtonActionPerformed(java.awt.event.ActionEvent evt){
+         JFileChooser chooser = new JFileChooser(".");
+        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        int response = chooser.showOpenDialog(null); // dialog where user can choose a file
+        if(response == JFileChooser.APPROVE_OPTION){
+            
+            File f = chooser.getSelectedFile();
+            String fileName = f.getAbsolutePath();
+            Double lengthOfFile = f.length()/Math.pow(1024, 2);// convert bytes to MB
+            System.out.println(lengthOfFile);
+            if(f.isFile()){
+                if(fileName.contains(".png") || fileName.contains(".jpg")){
+                    if(lengthOfFile<5){
+                        // do the insertion into database and to the place to insert image
+//                        ImageIcon imageIcon = new ImageIcon(new ImageIcon(fileName).getImage().getScaledInstance(0/*label width*/, 0/*labelheight*/, 0/*smooth scale or something*/));
+                        // set label with the image   label.setIcon(imageIcon)
+                        try{
+                            File image = new File(fileName);
+                            FileInputStream fis = new FileInputStream(image);
+                            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                            byte[] buf = new byte[(int)Math.pow(1024, 2)];
+                            try {
+                                for(int readNum; (readNum=fis.read(buf))!=1;){
+                                    bos.write(buf,0,readNum);
+                                }
+                            } catch (Exception ex) {
+//                                Logger.getLogger(CommentPage.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            picture = bos.toByteArray();
+                        }
+                        
+                        catch(FileNotFoundException ex){
+                            
+                        }
+                    }
+                    else{
+                        JOptionPane.showMessageDialog(null, "ALERT!!\nThe size of your image is too large.");
+                    }
 
+                }
+                else{
+                    JOptionPane.showMessageDialog(null, "ALERT!!\nThe file you're choosing is not a picture format supported");
+                }
+            }
+        }
+    }
+    
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         try{
             PreparedStatement st;
@@ -468,7 +565,7 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CommentPage().setVisible(true);
+                new CommentPage(1,1).setVisible(true);
             }
         });
     }
