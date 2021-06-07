@@ -18,11 +18,16 @@ import javax.swing.JOptionPane;
 
 
 public class ImportExportForm extends javax.swing.JFrame {
-
+    private String userName;
     /**
      * Creates new form ImportExportForm
      */
     public ImportExportForm() {
+        initComponents();
+        this.setLocationRelativeTo(null);
+    }
+    public ImportExportForm(String userName){
+        this.userName = userName;
         initComponents();
         this.setLocationRelativeTo(null);
     }
@@ -544,7 +549,7 @@ public class ImportExportForm extends javax.swing.JFrame {
     }//GEN-LAST:event_exportButtonActionPerformed
 
     private void homeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeButtonActionPerformed
-        ProjectDashboard projectDashboard = new ProjectDashboard();
+        ProjectDashboard projectDashboard = new ProjectDashboard(userName);
         projectDashboard.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_homeButtonActionPerformed

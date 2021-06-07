@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 public class IssueCreationForm extends javax.swing.JFrame {
     private static int projectID;
     private static String projectName;
+    private String userName;
     /**
      * Creates new form IssueCreationForm
      */
@@ -34,8 +35,9 @@ public class IssueCreationForm extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
     }
     
-    public IssueCreationForm(int projectID) {
+    public IssueCreationForm(int projectID, String userName) {
         this.projectID = projectID;
+        this.userName = userName;
         String query1 = "SELECT* FROM project WHERE projectID =" + projectID;//query to select all from selected row in table named 'issue'
         
         Cnx connectionClass = new Cnx(); //create connection
@@ -292,7 +294,7 @@ public class IssueCreationForm extends javax.swing.JFrame {
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         //go to make Issue Dashboard Form
-        IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectID));
+        IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectID), userName);
         issueDashboard.setVisible(true); 
         issueDashboard.setLocationRelativeTo(null);
         // close Issue Creation Form
@@ -346,7 +348,7 @@ public class IssueCreationForm extends javax.swing.JFrame {
                         String sql = "INSERT INTO issue VALUES ("+issueID+",'"+name+"',"+projectID+",'"+status+"','"+tag+"','"+currentTime+"','"+assignee+"','creator','"+description+"',"+priority+")";
                         if(st2.executeUpdate(sql) != 0){
                             JOptionPane.showMessageDialog(null,"Your issue has been created");
-                            IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectID));
+                            IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectID), userName);
                             issueDashboard.setVisible(true); 
                             issueDashboard.setLocationRelativeTo(null);
                             // close Issue Creation Form

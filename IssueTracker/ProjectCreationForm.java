@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
  * @author user
  */
 public class ProjectCreationForm extends javax.swing.JFrame {
-
+    private String userName;
     /**
      * Creates new form ProjectCreationForm
      */
@@ -26,6 +26,11 @@ public class ProjectCreationForm extends javax.swing.JFrame {
         initComponents();
         this.setLocationRelativeTo(null); //to let the form adjust to the center of our computer screen
         
+    }
+    public ProjectCreationForm(String userName){
+        this.userName = userName;
+        initComponents();
+        this.setLocationRelativeTo(null);
     }
 
     /**
@@ -263,7 +268,7 @@ public class ProjectCreationForm extends javax.swing.JFrame {
                     st2.executeUpdate(query2); // execute insertion
                     
                     JOptionPane.showMessageDialog(null, "SUCCESS!\nyou have created a new project!"); // use message dialog panel to tell the user creation is a success
-                    ProjectDashboard projectDashboard = new ProjectDashboard(); // create ProjectBoard object, to return to homepage/ProjectBoard GUI
+                    ProjectDashboard projectDashboard = new ProjectDashboard(userName); // create ProjectBoard object, to return to homepage/ProjectBoard GUI
                     projectDashboard.setVisible(true); // set ProjectBoard GUI so that it is visible
                     this.dispose(); // dispose the current ProjectCreationForm GUI
                     
@@ -290,7 +295,7 @@ public class ProjectCreationForm extends javax.swing.JFrame {
      */
     private void homeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeButtonActionPerformed
         
-        ProjectDashboard projectDashboard = new ProjectDashboard();
+        ProjectDashboard projectDashboard = new ProjectDashboard(userName);
         projectDashboard.setVisible(true);
         this.dispose();
         

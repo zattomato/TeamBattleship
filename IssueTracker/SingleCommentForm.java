@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 
 public class SingleCommentForm extends javax.swing.JFrame {
     private JFrame referenceToSearchForm; // to refer to the JFrame of SearchForm.java
+    private String userName;
     /**
      * Creates new form SingleCommentForm
      */
@@ -18,8 +19,8 @@ public class SingleCommentForm extends javax.swing.JFrame {
         this.setLocationRelativeTo(null);
     }
     
-    public SingleCommentForm(int projectID, int issueID, int commentID, JFrame referenceToSearchForm) throws SQLException{
-        
+    public SingleCommentForm(int projectID, int issueID, int commentID, String userName, JFrame referenceToSearchForm) throws SQLException{
+        this.userName = userName;
         initComponents();
         this.setLocationRelativeTo(null);
         this.referenceToSearchForm = referenceToSearchForm;

@@ -261,7 +261,7 @@ public class ProjectDashboard extends javax.swing.JFrame {
         int row = projectTable.getSelectedRow(); //get the row which the user clicked on
         TableModel tableModel = projectTable.getModel(); // get the table model
         int projectID = (int)tableModel.getValueAt(row, 0); // get the data inside column projectID, to be passed to Issue Dashbord form
-        IssueDashboard issueDashboard = new IssueDashboard(projectID); 
+        IssueDashboard issueDashboard = new IssueDashboard(projectID,userName); 
         this.dispose(); //dispose the current ProjectDashboard GUI
         issueDashboard.setVisible(true); 
        
@@ -274,21 +274,21 @@ public class ProjectDashboard extends javax.swing.JFrame {
      */
     private void createProjectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_createProjectActionPerformed
         
-        ProjectCreationForm projectCreationForm = new ProjectCreationForm();
+        ProjectCreationForm projectCreationForm = new ProjectCreationForm(userName);
         projectCreationForm.setVisible(true); // set the ProjectCreationForm GUI so that it is visible
         this.dispose(); // dispose this ProjectDashboard form
     }//GEN-LAST:event_createProjectActionPerformed
 
     private void importExportFormButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_importExportFormButtonActionPerformed
         
-        ImportExportForm importExportForm = new ImportExportForm();
+        ImportExportForm importExportForm = new ImportExportForm(userName);
         importExportForm.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_importExportFormButtonActionPerformed
 
     private void searchTextFieldKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_searchTextFieldKeyPressed
         if(evt.getKeyCode() == KeyEvent.VK_ENTER){
-            SearchForm searchForm = new SearchForm(searchTextField.getText());
+            SearchForm searchForm = new SearchForm(searchTextField.getText(),userName);
             searchForm.setVisible(true);
             this.dispose();
         }

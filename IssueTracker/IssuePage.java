@@ -27,6 +27,7 @@ public class IssuePage extends javax.swing.JFrame {
     private static int issueIDs;
     private static String projectNames;
     private static String[][] userInfo;
+    private String userName;
     private JFrame referenceToSearchForm; // to refer to the JFrame of SearchForm.java
     /**
      * Creates new form IssuePage
@@ -38,14 +39,15 @@ public class IssuePage extends javax.swing.JFrame {
     }
     
     // overloaded constructor to accept reference to SearchForm.java
-    public IssuePage(PreparedStatement st, int projectID,JFrame referenceToSearchForm) throws SQLException{ 
-        this(st,projectID); // calling the constructor with two arguments
+    public IssuePage(PreparedStatement st, int projectID, String userName, JFrame referenceToSearchForm) throws SQLException{ 
+        this(st,projectID, userName); // calling the constructor with two arguments
         this.referenceToSearchForm = referenceToSearchForm;
         searchBackButton.setEnabled(true);
     }
     
-    public IssuePage(PreparedStatement st, int projectID) throws SQLException{
+    public IssuePage(PreparedStatement st, int projectID, String userName) throws SQLException{
         this.projectIDs = projectID;
+        this.userName = userName;
         statement = st;
         ResultSet rs = st.executeQuery();
         try{
@@ -348,15 +350,14 @@ public class IssuePage extends javax.swing.JFrame {
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(commentButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(updateButton)
-                        .addGap(18, 18, 18)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(backButton)
                         .addGap(18, 18, 18)
                         .addComponent(searchBackButton)
-                        .addGap(2, 2, 2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(updateButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(commentButton))
                     .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(45, 45, 45))
@@ -399,7 +400,7 @@ public class IssuePage extends javax.swing.JFrame {
 
     private void commentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_commentButtonActionPerformed
         //go to make Comment Page
-        CommentPage commentPage = new CommentPage(projectIDs, issueIDs);
+        CommentPage commentPage = new CommentPage(projectIDs, issueIDs, userName);
         commentPage.setVisible(true); 
         commentPage.setLocationRelativeTo(null);
         // close Issue Creation Form
@@ -408,7 +409,7 @@ public class IssuePage extends javax.swing.JFrame {
 
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         //go to make Issue Dashboard Form
-        IssueDashboard issueDashboard = new IssueDashboard(projectIDs);
+        IssueDashboard issueDashboard = new IssueDashboard(projectIDs,userName);
         issueDashboard.setVisible(true); 
         issueDashboard.setLocationRelativeTo(null);
         // close Issue Creation Form
@@ -436,7 +437,7 @@ public class IssuePage extends javax.swing.JFrame {
                             String sql = "UPDATE issue SET issueStatus = '"+status+"' WHERE issueID = "+issueIDs;
                             if(st.executeUpdate(sql) != 0){
                                 JOptionPane.showMessageDialog(null,"Your issue has been updated");
-                                IssueDashboard issueDashboard = new IssueDashboard(projectIDs);
+                                IssueDashboard issueDashboard = new IssueDashboard(projectIDs, userName);
                                 issueDashboard.setVisible(true); 
                                 issueDashboard.setLocationRelativeTo(null);
                                 // close Issue Creation Form

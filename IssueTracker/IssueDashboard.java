@@ -22,6 +22,7 @@ import javax.swing.table.TableModel;
  */
 public class IssueDashboard extends javax.swing.JFrame {
     private static int projectID;
+    private String userName;
     private JFrame referenceToSearchForm; // to refer to the JFrame of SearchForm.java
     /**
      * Creates new form IssueDashboard
@@ -33,14 +34,15 @@ public class IssueDashboard extends javax.swing.JFrame {
         //insertTableContents(); // show the contents of table 'issue' from database
     }
     
-    public IssueDashboard(int projectID, JFrame referenceToSearchForm){ // overloaded constructor to accept reference to SearchForm.java 
-        this(projectID); // calling the constructor with one arguments
+    public IssueDashboard(int projectID,String userName, JFrame referenceToSearchForm){ // overloaded constructor to accept reference to SearchForm.java 
+        this(projectID, userName); // calling the constructor with one arguments
         this.referenceToSearchForm = referenceToSearchForm;
         searchBackButton.setEnabled(true);
         
     }
-    public IssueDashboard(int projectID) {
+    public IssueDashboard(int projectID, String userName) {
         this.projectID = projectID;
+        this.userName = userName;
         initComponents();
         this.setLocationRelativeTo(null); //to let the form adjust to the center of our computer screen
         insertTableContents(projectID); // show the contents of table 'issue' from database
@@ -209,23 +211,23 @@ public class IssueDashboard extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(257, 257, 257)
-                .addComponent(IssueDashboardLabel)
-                .addContainerGap(288, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(68, 68, 68)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(53, 53, 53)
-                        .addComponent(BackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(136, 136, 136)
-                        .addComponent(searchBackButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(CreateNewIssue)
-                        .addGap(48, 48, 48))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(issueSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(257, 257, 257)
+                        .addComponent(IssueDashboardLabel))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(68, 68, 68)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(BackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(searchBackButton)
+                                .addGap(356, 356, 356)
+                                .addComponent(CreateNewIssue))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(issueSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(86, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -248,7 +250,7 @@ public class IssueDashboard extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -269,7 +271,7 @@ public class IssueDashboard extends javax.swing.JFrame {
             st = connectionClass.getConnection().prepareStatement(query);
             st.setInt(1, issueID);
             st.setInt(2, projectID);
-            IssuePage form = new IssuePage(st, projectID);
+            IssuePage form = new IssuePage(st, projectID, userName);
             form.setVisible(true);
             form.pack();
             form.setLocationRelativeTo(null);
@@ -285,14 +287,14 @@ public class IssueDashboard extends javax.swing.JFrame {
     }//GEN-LAST:event_CreateNewIssueMouseClicked
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
-        ProjectDashboard projectDashboard = new ProjectDashboard();
+        ProjectDashboard projectDashboard = new ProjectDashboard(userName);
         projectDashboard.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_BackButtonActionPerformed
 
     private void CreateNewIssueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CreateNewIssueActionPerformed
         //got to make Issue Creation Form
-        IssueCreationForm form = new IssueCreationForm(projectID);
+        IssueCreationForm form = new IssueCreationForm(projectID,userName);
         form.setVisible(true);
         form.pack();
         form.setLocationRelativeTo(null);
@@ -322,7 +324,7 @@ public class IssueDashboard extends javax.swing.JFrame {
 
     private void issueSearchBarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_issueSearchBarKeyPressed
          if(evt.getKeyCode() == KeyEvent.VK_ENTER){ // if enter key is pressed at the search bar
-            SearchForm searchForm = new SearchForm(issueSearchBar.getText()); // go to the search form
+            SearchForm searchForm = new SearchForm(issueSearchBar.getText(),userName); // go to the search form
             searchForm.setVisible(true);
             this.dispose(); // dispose this current form
         }

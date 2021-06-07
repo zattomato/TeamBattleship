@@ -16,12 +16,14 @@ public class SearchForm extends javax.swing.JFrame {
     private ArrayList<ProjectTable> projectList; // arrayList to store data fetched from 'project' table inside database
     private ArrayList<IssueTable> issueList; //     " " from 'issue' table inside database
     private ArrayList<CommentTable> commentList; // " " from 'comment' table inside database
+    private String userName;
     
     /**
      * Creates new form SearchForm
      */
-    public SearchForm(String toSearch) {
+    public SearchForm(String toSearch, String userName) {
         initComponents();
+        this.userName = userName;
         this.setLocationRelativeTo(null);
         projectList = new ArrayList(); // instantiate the arrayList
         issueList = new ArrayList();
@@ -330,7 +332,7 @@ public class SearchForm extends javax.swing.JFrame {
         int row = projectTable.getSelectedRow(); //get the row which the user clicked on
         TableModel tableModel = projectTable.getModel(); // get the table model
         int projectID = (int)tableModel.getValueAt(row, 0); // get the data inside column projectID, to be passed to Issue Dashbord form
-        IssueDashboard issueDashboard = new IssueDashboard(projectID,this); // call IssueDashboard constructor and pass the arguments
+        IssueDashboard issueDashboard = new IssueDashboard(projectID,userName,this); // call IssueDashboard constructor and pass the arguments
         issueDashboard.setVisible(true); // set IssueDashboard to visible
         this.setVisible(false); // set this form to invisible
 
@@ -346,7 +348,7 @@ public class SearchForm extends javax.swing.JFrame {
             PreparedStatement st = new Cnx().getConnection().prepareStatement(query); // preparedStatement to be passed to issuePage (because issuePage require it)
             st.setInt(1, issueID);
             st.setInt(2, projectID);
-            IssuePage issuePage = new IssuePage(st, projectID,this); // call IssuePage constructor and pass the arguments
+            IssuePage issuePage = new IssuePage(st, projectID,userName, this); // call IssuePage constructor and pass the arguments
             issuePage.setVisible(true); // set IssuePage to visible
             issuePage.pack();
             issuePage.setLocationRelativeTo(null); // set Issuepage to the center of the screen
@@ -365,7 +367,7 @@ public class SearchForm extends javax.swing.JFrame {
         int commentID = (int)tableModel.getValueAt(row, 2);
         SingleCommentForm singleCommentForm; // declare SingleCommentForm
         try {
-            singleCommentForm = new SingleCommentForm(projectID,issueID,commentID,this); // call SinglecommentForm(form to display one comment only) and pass the arguments
+            singleCommentForm = new SingleCommentForm(projectID,issueID,commentID,userName, this); // call SinglecommentForm(form to display one comment only) and pass the arguments
             singleCommentForm.setVisible(true); // set SingleCommentForm to visible
             this.setVisible(false); //set this form to invisible
         } catch (SQLException ex) {
@@ -399,7 +401,7 @@ public class SearchForm extends javax.swing.JFrame {
     }//GEN-LAST:event_searchTextFieldFocusLost
 
     private void homeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_homeButtonActionPerformed
-        ProjectDashboard projectDashboard = new ProjectDashboard();
+        ProjectDashboard projectDashboard = new ProjectDashboard(userName);
         projectDashboard.setVisible(true);
         this.dispose();
     }//GEN-LAST:event_homeButtonActionPerformed
