@@ -38,7 +38,8 @@ import javax.swing.JTextArea;
  *
  * @author User
  */
-public class CommentPage extends javax.swing.JFrame implements MouseListener {
+public class CommentPage extends javax.swing.JFrame  {
+    private String userName;
     private static int projectIDs;
     private static int issueIDs;
     private static int commentIDs;
@@ -47,7 +48,6 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
     private static String username;
     private byte[] picture = null;
     private JTextArea addComment;
-    private JTextArea commentCreator;
     private JTextArea[] jTextArea;
     private JButton undoButton;
     private JButton redoButton;
@@ -57,7 +57,6 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
     private JButton[] jPictureButton;
     private JScrollPane scrollAddComment;
     private JScrollPane[] jScrollPane;
-    private JLabel addYourName;
     private JLabel[] jLabelID;
     private JLabel[] jLabelcommentID;
     private JLabel[] jLabelCreatedby;
@@ -75,7 +74,7 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
         this.setTitle("Comment Page");
         this.setLocationRelativeTo(null);
     }
-    public CommentPage(int projectID, int issueID){
+    public CommentPage(int projectID, int issueID, String userName){
         try{
         picture = null;
         Cnx connectionClass = new Cnx(); //establish connection
@@ -90,6 +89,7 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
         this.setLocationRelativeTo(null);
         this.projectIDs = projectID;
         this.issueIDs = issueID;
+        this.userName = userName;
             
             String query = "SELECT* FROM comment WHERE projectID = " +projectID + " and issueID = " + issueID +" order by commentID";
             Statement st = connection.createStatement(); //create a statement using connection that already establish
@@ -217,7 +217,6 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
     }
     public void goToReactionForm(int commentID,int issueID,int projectID){
         ReactionForm reactPage = new ReactionForm(commentID,issueID,projectID);
-        this.dispose();//dispose the current ProjectDashboard GUI
         reactPage.setVisible(true);
     }
     
@@ -231,7 +230,7 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
                 try{
 
                     String description = this.addComment.getText(); 
-                    String name = this.commentCreator.getText();
+                    String name = userName;
                     
                     //check if any field is empty
                     if(name.equals("")||description.equals("")){
@@ -268,7 +267,7 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
                         st2.setBytes(7, picture);
                         if(st2.executeUpdate() != 0){
                             JOptionPane.showMessageDialog(null,"Your comment has been added");
-                            CommentPage newCommentPage = new CommentPage(Integer.valueOf(projectIDs),Integer.valueOf(issueIDs));
+                            CommentPage newCommentPage = new CommentPage(Integer.valueOf(projectIDs),Integer.valueOf(issueIDs), userName);
                             newCommentPage.setVisible(true); 
                             newCommentPage.setLocationRelativeTo(null);
                             // close previous Comment Page 
@@ -290,13 +289,6 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
     }
     
     public void addComment(){
-        addYourName = new JLabel("Name : ");
-        addYourName.setBounds(50, 70, 100, 23);
-        jPanel1.add(addYourName);
-        
-        commentCreator = new JTextArea();
-        commentCreator.setBounds(100, 70, 100, 23);
-        jPanel1.add(commentCreator);
         
         addComment = new JTextArea("Add your comment here");
         addComment.setForeground(Color.LIGHT_GRAY);
@@ -304,7 +296,14 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
         addComment.setWrapStyleWord(true);
         addComment.setLineWrap(true);
         addComment.setOpaque(true);
-        addComment.addMouseListener(this);
+        addComment.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                addCommentFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                addCommentTextFocusLost(evt);
+            }
+        });
         jPanel1.add(addComment);
         
         scrollAddComment = new JScrollPane(); 
@@ -313,10 +312,10 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
         jPanel1.add(scrollAddComment);
         
         undoButton = new JButton("Undo");
-        undoButton.setBounds(100, 100, 80, 23);
+        undoButton.setBounds(800, 110, 80, 23);
         jPanel1.add(undoButton);
         redoButton = new JButton("Redo");
-        redoButton.setBounds(100, 120, 80, 23);
+        redoButton.setBounds(800, 130, 80, 23);
         jPanel1.add(redoButton);
         submitButton = new JButton("Submit");
         submitButton.setBounds(800, 70, 100, 23);
@@ -480,10 +479,7 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
             System.out.println(lengthOfFile);
             if(f.isFile()){
                 if(fileName.contains(".png") || fileName.contains(".jpg")){
-                    if(lengthOfFile<5){
-                        // do the insertion into database and to the place to insert image
-//                        ImageIcon imageIcon = new ImageIcon(new ImageIcon(fileName).getImage().getScaledInstance(0/*label width*/, 0/*labelheight*/, 0/*smooth scale or something*/));
-                        // set label with the image   label.setIcon(imageIcon)
+                    if(lengthOfFile<5){ // make it not the file chosen not more than 5 MB
                         try{
                             File image = new File(fileName);
                             FileInputStream fis = new FileInputStream(image);
@@ -494,7 +490,7 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
                                     bos.write(buf,0,readNum);
                                 }
                             } catch (Exception ex) {
-//                                Logger.getLogger(CommentPage.class.getName()).log(Level.SEVERE, null, ex);
+                                
                             }
                             picture = bos.toByteArray();
                         }
@@ -523,7 +519,7 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
             st = connectionClass.getConnection().prepareStatement(query);
             st.setInt(1, issueIDs);
             st.setInt(2, projectIDs);
-            IssuePage form = new IssuePage(st, projectIDs);
+            IssuePage form = new IssuePage(st, projectIDs, userName);
             form.setVisible(true);
             form.pack();
             form.setLocationRelativeTo(null);
@@ -533,7 +529,22 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
         catch (SQLException ex) {
         }
     }//GEN-LAST:event_backButtonActionPerformed
-
+    
+    
+    private void addCommentFocusGained(java.awt.event.FocusEvent evt){
+         if(addComment.getText().trim().toLowerCase().equals("add your comment here")){
+            addComment.setText("");
+            addComment.setForeground(Color.black);
+        }
+    }
+    
+    private void addCommentTextFocusLost(java.awt.event.FocusEvent evt){
+         if(addComment.getText().trim().toLowerCase().equals("add your comment here")||
+                addComment.getText().trim().equals("")){
+            addComment.setText("Add your comment here"); //set the placeholder for the text box
+            addComment.setForeground(new Color(153,153,153)); // set the colour of placeholder to be slighly gray/dimmed
+        }
+    }
     /**
      * @param args the command line arguments
      */
@@ -565,7 +576,7 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CommentPage(1,1).setVisible(true);
+                new CommentPage().setVisible(true);
             }
         });
     }
@@ -576,32 +587,5 @@ public class CommentPage extends javax.swing.JFrame implements MouseListener {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane2;
     // End of variables declaration//GEN-END:variables
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-        addComment.setText("");
-        addComment.setForeground(Color.BLACK);
-        
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+   
 }
