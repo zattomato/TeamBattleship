@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Toolkit;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import javax.swing.*;
@@ -21,16 +19,15 @@ import java.util.logging.Logger;
 
 public class ChatForm extends javax.swing.JFrame {
     
-    static GroupLayout jPanel2Layout;
-    static SequentialGroup subGroup; 
-    static ParallelGroup group ;
-    static int NUMOFRECORDS;
-    static String executionTimeStamp;
-    static String userName = "User";// user is the default name
-    static int status = 0; // to exit the recursive function since this.dispose did not stop the execution
-    static int initiateRefresh = 0; // use to determine whether refresh has been called
-    static boolean autoScroll = true; // to determine whether autoScroll is enabled or not
-    static int toggleCount = 0; // odd number when autoScroll is pushed and even when autoScroll is released
+    private GroupLayout jPanel2Layout;
+    private SequentialGroup subGroup; 
+    private ParallelGroup group ;
+    private int numOfRecords;
+    private String executionTimeStamp;
+    private String userName = "User";// user is the default name
+    private int status = 0; // to exit the while function since this.dispose did not stop the execution
+    private boolean autoScroll = true; // to determine whether autoScroll is enabled or not
+    private int toggleCount = 0; // odd number when autoScroll is pushed and even when autoScroll is released
     /**
      * Creates new form ChatForm
      */
@@ -64,7 +61,7 @@ public class ChatForm extends javax.swing.JFrame {
         ArrayList<Chat> chatList = new ArrayList<>();
         while (result.next()) {
             chatList.add(new Chat(result.getString("userName"), result.getString("text"), result.getTimestamp("date")));
-            NUMOFRECORDS++;
+            numOfRecords++;
         }
 
         int count = 0;
@@ -93,13 +90,24 @@ public class ChatForm extends javax.swing.JFrame {
             jPanel2Layout.setVerticalGroup(group);
 
         }
+        SwingWorker<Void,Void> worker = new SwingWorker<>() {
+                @Override
+                protected Void doInBackground() throws Exception { // this is required because the form will not be responsive if the refresh() being called directly
+                    while(true){ // call refresh until exception occurs(status set to 1)
+                    refresh();
+                        
+                    }
+                }
+
+            };
+             worker.execute();
        
     }
     
-    public static void refresh() throws InterruptedException, SQLException, Exception{
+    private void refresh() throws InterruptedException, SQLException, Exception{
         if(status==1){
             status = 0; // set back to 0
-            throw new Exception(); // exception to end the recursive function
+            throw new Exception(); // exception to end the while loop
         }
         Thread.sleep(1000);//sleep for 1 second
         Date dt = new Date();
@@ -116,10 +124,10 @@ public class ChatForm extends javax.swing.JFrame {
             update(chatList);
 
         }
-        refresh();
         
     }
-    public static void update(ArrayList<Chat> chatList){
+    
+    private void update(ArrayList<Chat> chatList){
         
         for (int i = 0; i < chatList.size(); i++) {// create text field and set it with the data obtained from the database
 
@@ -132,16 +140,16 @@ public class ChatForm extends javax.swing.JFrame {
             textArea.setText(chatList.get(i).getUserName() + ":\n\n" + chatList.get(i).getText() + "\n\n\t" + chatList.get(i).getDate().toString());
             scrollPanel.setViewportView(textArea);
             if (chatList.get(i).getUserName().equals(userName)) {
-                scrollPanel.setBounds(345, 57 + NUMOFRECORDS * (83 + 18), 273, 83);// set text to the right
+                scrollPanel.setBounds(345, 57 + numOfRecords * (83 + 18), 273, 83);// set text to the right
             } else {
 
-                scrollPanel.setBounds(50, 57 + NUMOFRECORDS * (83 + 18), 273, 83); // (coordinate x, coordinate y, width, height) 
+                scrollPanel.setBounds(50, 57 + numOfRecords * (83 + 18), 273, 83); // (coordinate x, coordinate y, width, height) 
             }
             //coordinate y = 57 is the initial gap, 83 is the height of the textField and 18 is the gap used for each text field
             jPanel2.add(scrollPanel);
             jScrollPane1.setViewportView(jPanel2);
-            NUMOFRECORDS++;
-            group.addGap(57 + NUMOFRECORDS * (83 + 18)); // increase the gap
+            numOfRecords++;
+            group.addGap(57 + numOfRecords * (83 + 18)); // increase the gap
             group.addGroup(subGroup);
             jPanel2Layout.setVerticalGroup(group);
 
@@ -245,12 +253,7 @@ public class ChatForm extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-//        jPanel2.setPreferredSize(new java.awt.Dimension(700, 403));
-        jPanel2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                jPanel2MouseMoved(evt);
-            }
-        });
+
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
                 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -264,10 +267,7 @@ public class ChatForm extends javax.swing.JFrame {
         subGroup.addGap(179);
         group.addGroup(subGroup);
         jPanel2Layout.setVerticalGroup(group);
-//        jPanel2Layout.setVerticalGroup(
-//            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-//            .addGap(0, 403, Short.MAX_VALUE)
-//        );
+
 
         jScrollPane1.setViewportView(jPanel2);
         
@@ -400,11 +400,6 @@ public class ChatForm extends javax.swing.JFrame {
         );
 
         jPanel2.setPreferredSize(new java.awt.Dimension(700, 403));
-        jPanel2.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                jPanel2MouseMoved(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -465,9 +460,8 @@ public class ChatForm extends javax.swing.JFrame {
     private void backButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backButtonActionPerformed
         ProjectDashboard projectDashboard = new ProjectDashboard(userName);
         projectDashboard.setVisible(true);
-        status = 1; // set to 1 so that refresh can throw exception to end the recursive loop
-        initiateRefresh = 0; // set back to 0
-        NUMOFRECORDS = 0;
+        status = 1; // set to 1 so that refresh can throw exception to end the while loop
+        numOfRecords = 0;
         this.dispose();
         
     }//GEN-LAST:event_backButtonActionPerformed
@@ -486,21 +480,6 @@ public class ChatForm extends javax.swing.JFrame {
            userTextArea.setForeground(new Color(153, 153, 153));
        }
     }//GEN-LAST:event_userTextAreaFocusLost
-
-    private void jPanel2MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel2MouseMoved
-        if(initiateRefresh<1){ // this event is one time event only at the start when user's mouse enter jpanel2
-             SwingWorker<Void,Void> worker = new SwingWorker<>() {
-                @Override
-                protected Void doInBackground() throws Exception { // this is required because the form will not be responsive if the refresh() being called directly
-                    refresh();
-                    return null;
-                }
-
-            };
-            initiateRefresh++;
-             worker.execute();
-        }
-    }//GEN-LAST:event_jPanel2MouseMoved
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
             toggleCount++;
@@ -559,23 +538,16 @@ public class ChatForm extends javax.swing.JFrame {
                 }
             }
         });
-        initiateRefresh = 1;
-        Thread.sleep(4000); // wait for a while for the form to pop up
-        try {
-            refresh(); // call refresh after the form has been instantiated
-        } catch (Exception ex) {
-           // will catch the exception purposely thrown to exit the recursive function
-          
-        }
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton backButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
-    private static javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private static javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JToggleButton jToggleButton1;
     private javax.swing.JButton submitButton;
