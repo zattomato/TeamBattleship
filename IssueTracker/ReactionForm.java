@@ -36,7 +36,7 @@ public class ReactionForm extends javax.swing.JFrame {
         this.iID=0;
         this.pID=0;
         initComponents();
-        this.setLocationRelativeTo(null);
+        this.setLocation(800, 250);
     }
     
     public ReactionForm(int commentID, int issueID, int projectID){
@@ -44,8 +44,8 @@ public class ReactionForm extends javax.swing.JFrame {
         this.iID = issueID;
         this.pID = projectID;
         initComponents();
-        getComment();
-        this.setLocationRelativeTo(null);
+//        getComment();
+        this.setLocation(920, 260);
         initial();
         reactionNum();
     }
@@ -63,7 +63,7 @@ public class ReactionForm extends javax.swing.JFrame {
             ResultSet rs=st.executeQuery();
             rs.next();
             String comment= rs.getString("text");
-            Comment.setText(comment);
+//            Comment.setText(comment);
         }catch (SQLException ex) {
         }
     }
@@ -287,23 +287,17 @@ public class ReactionForm extends javax.swing.JFrame {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        Comment = new javax.swing.JLabel();
         HappyLabel = new javax.swing.JLabel();
         SadLabel = new javax.swing.JLabel();
         AngryLabel = new javax.swing.JLabel();
         HappyNum = new javax.swing.JLabel();
         SadNum = new javax.swing.JLabel();
         AngryNum = new javax.swing.JLabel();
-        Back = new javax.swing.JButton();
         Happy = new javax.swing.JButton();
         Sad = new javax.swing.JButton();
         Angry = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-
-        Comment.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
-        Comment.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Comment.setText("Comment");
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         HappyLabel.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         HappyLabel.setText("Happy :");
@@ -325,14 +319,6 @@ public class ReactionForm extends javax.swing.JFrame {
         AngryNum.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         AngryNum.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         AngryNum.setText("0");
-
-        Back.setFont(new java.awt.Font("Times New Roman", 1, 10)); // NOI18N
-        Back.setText("BACK");
-        Back.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BackActionPerformed(evt);
-            }
-        });
 
         Happy.setFont(new java.awt.Font("Times New Roman", 1, 10)); // NOI18N
         Happy.setText("HAPPY");
@@ -362,111 +348,78 @@ public class ReactionForm extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(Happy, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(HappyLabel)
+                            .addComponent(AngryLabel)
+                            .addComponent(SadLabel))
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Back)
-                            .addComponent(Comment, javax.swing.GroupLayout.PREFERRED_SIZE, 478, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 8, Short.MAX_VALUE))
+                            .addComponent(SadNum, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(AngryNum, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(HappyNum, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(SadLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(SadNum, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(HappyLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(HappyNum, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(AngryLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(AngryNum, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(Happy, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(Sad, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(5, 5, 5)
+                        .addGap(18, 18, 18)
                         .addComponent(Angry, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                .addGap(50, 50, 50))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(Back)
-                .addGap(17, 17, 17)
-                .addComponent(Comment, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(HappyLabel)
-                            .addComponent(HappyNum))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(SadLabel)
-                            .addComponent(SadNum, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(AngryLabel)
-                            .addComponent(AngryNum))
-                        .addGap(5, 5, 5))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(Happy)
-                        .addComponent(Sad)
-                        .addComponent(Angry)))
-                .addContainerGap())
+                .addGap(43, 43, 43)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(HappyLabel)
+                    .addComponent(HappyNum))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(SadLabel)
+                    .addComponent(SadNum, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(AngryLabel)
+                    .addComponent(AngryNum))
+                .addGap(28, 28, 28)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(Happy)
+                    .addComponent(Sad)
+                    .addComponent(Angry))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 269, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void HappyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HappyActionPerformed
-        reaction(1);
-        reactionNum();
-    }//GEN-LAST:event_HappyActionPerformed
-
-    private void SadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SadActionPerformed
-        reaction(2);
-        reactionNum();
-    }//GEN-LAST:event_SadActionPerformed
 
     private void AngryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AngryActionPerformed
         reaction(3);
         reactionNum();
     }//GEN-LAST:event_AngryActionPerformed
 
-    private void BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackActionPerformed
-        try{
-            PreparedStatement st;
-            String query = "SELECT * FROM issue WHERE issueID = ? AND projectID = ?" ;
-            Cnx connectionClass = new Cnx(); //create connection
-            st = connectionClass.getConnection().prepareStatement(query);
-            st.setInt(1, iID);
-            st.setInt(2, pID);
-            CommentPage form = new CommentPage(iID, pID);
-            form.setVisible(true);
-            form.pack();
-            form.setLocationRelativeTo(null);
-            // close Issue Dashboard Form
-            this.dispose();
-        }catch (SQLException ex) {
-        }
-    }//GEN-LAST:event_BackActionPerformed
+    private void SadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SadActionPerformed
+        reaction(2);
+        reactionNum();
+    }//GEN-LAST:event_SadActionPerformed
+
+    private void HappyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_HappyActionPerformed
+        reaction(1);
+        reactionNum();
+    }//GEN-LAST:event_HappyActionPerformed
 
     /**
      * @param args the command line arguments
@@ -507,8 +460,6 @@ public class ReactionForm extends javax.swing.JFrame {
     private javax.swing.JButton Angry;
     private javax.swing.JLabel AngryLabel;
     private javax.swing.JLabel AngryNum;
-    private javax.swing.JButton Back;
-    private javax.swing.JLabel Comment;
     private javax.swing.JButton Happy;
     private javax.swing.JLabel HappyLabel;
     private javax.swing.JLabel HappyNum;
