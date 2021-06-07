@@ -2,7 +2,6 @@
 package IssueTracker;
 
 import ConnectionToDatabase.Cnx;
-import static IssueTracker.ChatForm.refresh;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
@@ -15,10 +14,10 @@ import javax.swing.table.TableModel;
 
 public class ProjectDashboard extends javax.swing.JFrame {
 
+    String userName = "username";// temporary can be deleted later
     /**
      * Creates new form ProjectDashboard
      */
-    String userName = "username";// temporary can be deleted later
     public ProjectDashboard(String userName){
        this();
        this.userName = userName;
