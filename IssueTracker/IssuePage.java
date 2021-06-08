@@ -12,6 +12,8 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -433,10 +435,14 @@ public class IssuePage extends javax.swing.JFrame {
                             Cnx connectionClass = new Cnx(); // create connection 
                             Connection connection = connectionClass.getConnection(); //create connection
                             Statement st = connection.createStatement(); // create statement from the established connection
-
-                            String sql = "UPDATE issue SET issueStatus = '"+status+"' WHERE issueID = "+issueIDs;
+                            Date dt = new Date();
+                            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            String currentTime = sdf.format(dt); 
+                            String sql = "UPDATE issue SET issueStatus = '"+status+"' WHERE issueID = "+issueIDs+" and projectID = "+projectIDs;
                             if(st.executeUpdate(sql) != 0){
                                 JOptionPane.showMessageDialog(null,"Your issue has been updated");
+                                ChangeLog changeLog = new ChangeLog(projectIDs,userName,currentTime,"update issue " + issueIDs + " status to " +status);
+                                changeLog.addLog();
                                 IssueDashboard issueDashboard = new IssueDashboard(projectIDs, userName);
                                 issueDashboard.setVisible(true); 
                                 issueDashboard.setLocationRelativeTo(null);
