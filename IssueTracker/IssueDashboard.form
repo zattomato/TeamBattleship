@@ -51,7 +51,9 @@
                                   <Component id="BackButton" min="-2" pref="73" max="-2" attributes="0"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="searchBackButton" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="356" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="265" max="-2" attributes="0"/>
+                                  <Component id="changeLogButton" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="CreateNewIssue" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <Group type="103" groupAlignment="0" attributes="0">
@@ -61,7 +63,7 @@
                           </Group>
                       </Group>
                   </Group>
-                  <EmptySpace pref="86" max="32767" attributes="0"/>
+                  <EmptySpace pref="70" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -79,6 +81,7 @@
                       <Component id="CreateNewIssue" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="BackButton" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="searchBackButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="changeLogButton" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="77" max="32767" attributes="0"/>
               </Group>
@@ -214,6 +217,14 @@
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="searchBackButton.setEnabled(false);"/>
           </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="changeLogButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Change Log"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="changeLogButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

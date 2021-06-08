@@ -131,6 +131,7 @@ public class IssueDashboard extends javax.swing.JFrame {
         issueSearchBar = new javax.swing.JTextField();
         BackButton = new javax.swing.JButton();
         searchBackButton = new javax.swing.JButton();
+        changeLogButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -206,6 +207,13 @@ public class IssueDashboard extends javax.swing.JFrame {
             }
         });
 
+        changeLogButton.setText("Change Log");
+        changeLogButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                changeLogButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -222,12 +230,14 @@ public class IssueDashboard extends javax.swing.JFrame {
                                 .addComponent(BackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(18, 18, 18)
                                 .addComponent(searchBackButton)
-                                .addGap(356, 356, 356)
+                                .addGap(265, 265, 265)
+                                .addComponent(changeLogButton)
+                                .addGap(18, 18, 18)
                                 .addComponent(CreateNewIssue))
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(issueSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(70, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -242,7 +252,8 @@ public class IssueDashboard extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(CreateNewIssue)
                     .addComponent(BackButton)
-                    .addComponent(searchBackButton))
+                    .addComponent(searchBackButton)
+                    .addComponent(changeLogButton))
                 .addContainerGap(77, Short.MAX_VALUE))
         );
 
@@ -330,6 +341,11 @@ public class IssueDashboard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_issueSearchBarKeyPressed
 
+    private void changeLogButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_changeLogButtonActionPerformed
+        ChangeLogForm changeLogForm = new ChangeLogForm(projectID);
+        changeLogForm.setVisible(true);
+    }//GEN-LAST:event_changeLogButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -370,6 +386,7 @@ public class IssueDashboard extends javax.swing.JFrame {
     private javax.swing.JButton CreateNewIssue;
     private javax.swing.JLabel IssueDashboardLabel;
     private javax.swing.JTable IssueDashboardTable;
+    private javax.swing.JButton changeLogButton;
     private javax.swing.JTextField issueSearchBar;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
