@@ -39,7 +39,7 @@ import javax.swing.JTextArea;
  * @author User
  */
 public class CommentPage extends javax.swing.JFrame  {
-    private String userName;
+    private String sessionUserName;
     private static int projectIDs;
     private static int issueIDs;
     private static int commentIDs;
@@ -53,6 +53,7 @@ public class CommentPage extends javax.swing.JFrame  {
     private JButton redoButton;
     private JButton submitButton;
     private JButton uploadPictureButton;
+    private JButton[] jEditButton;
     private JButton[] jButton;
     private JButton[] jPictureButton;
     private JScrollPane scrollAddComment;
@@ -65,6 +66,7 @@ public class CommentPage extends javax.swing.JFrame  {
     private JLabel[] jLabelDate;
     private int index = 0;
     private ArrayList<Integer> indexOfJPictureButton = new ArrayList<>();
+    private ArrayList<Integer> indexOfJEditButton = new ArrayList<>();
     
     /**
      * Creates new form 
@@ -89,7 +91,7 @@ public class CommentPage extends javax.swing.JFrame  {
         this.setLocationRelativeTo(null);
         this.projectIDs = projectID;
         this.issueIDs = issueID;
-        this.userName = userName;
+        this.sessionUserName = userName;
             
             String query = "SELECT* FROM comment WHERE projectID = " +projectID + " and issueID = " + issueID +" order by commentID";
             Statement st = connection.createStatement(); //create a statement using connection that already establish
@@ -113,6 +115,7 @@ public class CommentPage extends javax.swing.JFrame  {
             jTextArea = new JTextArea[index];
             jButton = new JButton[index];
             jPictureButton = new JButton[index];
+            jEditButton = new JButton[index];
             jScrollPane = new JScrollPane[index];
             
 
@@ -174,6 +177,14 @@ public class CommentPage extends javax.swing.JFrame  {
                     jPanel1.add(jPictureButton[i]);
                     indexOfJPictureButton.add(i);
                 }
+                
+                if(username.equals(sessionUserName)){
+                    jTextArea[i].setEditable(true);
+                    jEditButton[i] = new JButton("Edit");
+                    jEditButton[i].setBounds(800,240+gap,100,23);
+                    jPanel1.add(jEditButton[i]);
+                    indexOfJEditButton.add(i);
+                }
                 picture = null;
                 System.out.println("i : " + i);
                 
@@ -201,6 +212,10 @@ public class CommentPage extends javax.swing.JFrame  {
                        goToPictureForm(i+1,issueIDs,projectIDs);
                        break;
                     }
+                    else if(e.getSource() == jEditButton[i]){
+                        editComment(jLabelcommentID[i].getText(),jTextArea[i].getText());
+                        break;
+                    }
                 }
                 if (e.getSource() == submitButton){
                     submitComment();
@@ -213,6 +228,9 @@ public class CommentPage extends javax.swing.JFrame  {
         for(int i=0; i<indexOfJPictureButton.size();i++){
             jPictureButton[indexOfJPictureButton.get(i)].addActionListener(buttonListener);
         }
+        for(int i=0; i<indexOfJEditButton.size();i++){
+            jEditButton[indexOfJEditButton.get(i)].addActionListener(buttonListener);
+        }
         submitButton.addActionListener(buttonListener);
     }
     public void goToReactionForm(int commentID,int issueID,int projectID){
@@ -224,13 +242,41 @@ public class CommentPage extends javax.swing.JFrame  {
         PictureForm pictureForm = new PictureForm(commentID, issueID, projectID);
         pictureForm.setVisible(true);
     }
+    
+    private void editComment(String commentID, String text){
+        int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to edit?", "Alert!",JOptionPane.YES_NO_OPTION); // prompt dialog panel
+        if(option==0){ // if yes
+        String sql = "UPDATE comment SET text = '"+text+"' WHERE projectID = "+projectIDs+" and issueID = "+issueIDs+" and commentID = "+commentID;
+        try {
+            int result = new Cnx().getConnection().createStatement().executeUpdate(sql);
+            if(result!=0){
+                JOptionPane.showMessageDialog(null,"You have successfully update your comment!");
+                Date dt = new java.util.Date();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String currentTime = sdf.format(dt);
+                ChangeLog changeLog = new ChangeLog(projectIDs,sessionUserName,currentTime,"edit comment number "+commentID+" in issue number " + issueIDs);
+                changeLog.addLog();
+                CommentPage newCommentPage = new CommentPage(projectIDs,issueIDs, sessionUserName);
+                newCommentPage.setVisible(true); 
+                newCommentPage.setLocationRelativeTo(null);
+                // close previous Comment Page 
+                this.dispose();
+            }
+            else{
+                JOptionPane.showMessageDialog(null,"Insertion failed!\nPlease try again");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(CommentPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        }
+    }
     public void submitComment(){
         int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to submit?", "Alert!",JOptionPane.YES_NO_OPTION); // prompt dialog panel
             if(option==0){ // if yes
                 try{
 
                     String description = this.addComment.getText(); 
-                    String name = userName;
+                    String name = sessionUserName;
                     
                     //check if any field is empty
                     if(name.equals("")||description.equals("")){
@@ -267,7 +313,7 @@ public class CommentPage extends javax.swing.JFrame  {
                         st2.setBytes(7, picture);
                         if(st2.executeUpdate() != 0){
                             JOptionPane.showMessageDialog(null,"Your comment has been added");
-                            CommentPage newCommentPage = new CommentPage(Integer.valueOf(projectIDs),Integer.valueOf(issueIDs), userName);
+                            CommentPage newCommentPage = new CommentPage(Integer.valueOf(projectIDs),Integer.valueOf(issueIDs), sessionUserName);
                             newCommentPage.setVisible(true); 
                             newCommentPage.setLocationRelativeTo(null);
                             // close previous Comment Page 
@@ -277,11 +323,11 @@ public class CommentPage extends javax.swing.JFrame  {
                             JOptionPane.showMessageDialog(null,"Check your information");
                         }
 
-                    }//end second try//end second try
+                    }//end second try//end second try//end second try//end second try
                     catch (SQLException ex) {
                         Logger.getLogger(ProjectDashboard.class.getName()).log(Level.SEVERE, null, ex); // print to the console if sql exceptions occurs
                     } 
-                }//end first try//end first try
+                }//end first try//end first try//end first try//end first try
                 catch(Exception e){
 
                 }
@@ -519,7 +565,7 @@ public class CommentPage extends javax.swing.JFrame  {
             st = connectionClass.getConnection().prepareStatement(query);
             st.setInt(1, issueIDs);
             st.setInt(2, projectIDs);
-            IssuePage form = new IssuePage(st, projectIDs, userName);
+            IssuePage form = new IssuePage(st, projectIDs, sessionUserName);
             form.setVisible(true);
             form.pack();
             form.setLocationRelativeTo(null);
