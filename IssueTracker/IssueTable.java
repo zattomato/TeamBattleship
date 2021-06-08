@@ -41,81 +41,41 @@ public class IssueTable {
         return issueID;
     }
 
-    public void setIssueID(int issueID) {
-        this.issueID = issueID;
-    }
-
     public String getIssueName() {
         return issueName;
-    }
-
-    public void setIssueName(String issueName) {
-        this.issueName = issueName;
     }
 
     public int getProjectID() {
         return projectID;
     }
 
-    public void setProjectID(int projectID) {
-        this.projectID = projectID;
-    }
-
-    public String getIssueDescription() {
-        return issueDescription;
-    }
-
-    public void setIssueDescription(String issueDescription) {
-        this.issueDescription = issueDescription;
-    }
-    
     public String getIssueStatus() {
         return issueStatus;
-    }
-
-    public void setIssueStatus(String issueStatus) {
-        this.issueStatus = issueStatus;
     }
 
     public String getIssueTag() {
         return issueTag;
     }
 
-    public void setIssueTag(String issueTag) {
-        this.issueTag = issueTag;
-    }
-
     public int getIssuePriority() {
         return issuePriority;
-    }
-
-    public void setIssuePriority(int issuePriority) {
-        this.issuePriority = issuePriority;
     }
 
     public Timestamp getIssueTime() {
         return issueTime;
     }
 
-    public void setIssueTime(Timestamp issueTime) {
-        this.issueTime = issueTime;
-    }
-
     public String getIssueAssignee() {
         return issueAssignee;
-    }
-
-    public void setIssueAssignee(String issueAssignee) {
-        this.issueAssignee = issueAssignee;
     }
 
     public String getIssueCreatedBy() {
         return issueCreatedBy;
     }
 
-    public void setIssueCreatedBy(String issueCreatedBy) {
-        this.issueCreatedBy = issueCreatedBy;
+    public String getIssueDescription() {
+        return issueDescription;
     }
-    
-          
+
+   
 }
