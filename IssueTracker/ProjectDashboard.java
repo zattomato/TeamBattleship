@@ -14,7 +14,8 @@ import javax.swing.table.TableModel;
 
 public class ProjectDashboard extends javax.swing.JFrame {
 
-    String userName = "username";// temporary can be deleted later
+    private String userName = "username";// temporary can be deleted later
+    private ArrayList<ProjectTable> projectList;
     /**
      * Creates new form ProjectDashboard
      */
@@ -25,6 +26,7 @@ public class ProjectDashboard extends javax.swing.JFrame {
     public ProjectDashboard() {
         initComponents();
         this.setLocationRelativeTo(null); //to let the form adjust to the center of our computer screen
+        projectList = new ArrayList<>();
         insertTableContents(); // show the contents of table 'project' from database
     }
     
@@ -37,7 +39,7 @@ public class ProjectDashboard extends javax.swing.JFrame {
      */
     public ArrayList<ProjectTable> createList(){
         
-            ArrayList<ProjectTable> list = new ArrayList<>();
+            
         try {
             Cnx connectionClass = new Cnx(); //establish connection
             Connection connection = connectionClass.getConnection(); //establish connection
@@ -47,7 +49,7 @@ public class ProjectDashboard extends javax.swing.JFrame {
             String description;
             int issueCount;
             
-            String query1 = "SELECT* FROM project order by projectID"; //query to select all from table named 'project'
+            String query1 = "SELECT* FROM project"; //query to select all from table named 'project'
             String query2;
             Statement st = connection.createStatement(); //create a statement using connection that already establish
             Statement st2 = connection.createStatement();
@@ -63,14 +65,14 @@ public class ProjectDashboard extends javax.swing.JFrame {
                 result2 = st2.executeQuery(query2);
                 result2.next();
                 issueCount = result2.getInt(""); // get count for issue with same projectID;     "" is because the column 'count' returned by database is not named
-                list.add(new ProjectTable(projectID,projectName,description,issueCount)); // instantiate ProjectTable object and insert it into ArrayList
+                projectList.add(new ProjectTable(projectID,projectName,description,issueCount)); // instantiate ProjectTable object and insert it into ArrayList
                 
             }
             
         } catch (SQLException ex) {
             Logger.getLogger(ProjectDashboard.class.getName()).log(Level.SEVERE, null, ex); // will just print the errors to our console
         }
-        return list; //return the ArrayList
+        return projectList; //return the ArrayList
     }
     
     
@@ -111,6 +113,9 @@ public class ProjectDashboard extends javax.swing.JFrame {
         importExportFormButton = new javax.swing.JButton();
         searchTextField = new javax.swing.JTextField();
         chatButton = new javax.swing.JButton();
+        projectIDSortButton = new javax.swing.JButton();
+        projectNameSortButton = new javax.swing.JButton();
+        sortLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -194,6 +199,25 @@ public class ProjectDashboard extends javax.swing.JFrame {
             }
         });
 
+        projectIDSortButton.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        projectIDSortButton.setText("ID");
+        projectIDSortButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                projectIDSortButtonActionPerformed(evt);
+            }
+        });
+
+        projectNameSortButton.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        projectNameSortButton.setText("Name");
+        projectNameSortButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                projectNameSortButtonActionPerformed(evt);
+            }
+        });
+
+        sortLabel.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        sortLabel.setText("Sort By:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -202,39 +226,49 @@ public class ProjectDashboard extends javax.swing.JFrame {
                 .addGap(81, 81, 81)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 631, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(createProject)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(importExportFormButton)
+                                .addComponent(sortLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 631, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(projectIDSortButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(projectNameSortButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap(89, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(188, 188, 188)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(188, 188, 188)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(createProject)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(importExportFormButton)
+                                .addGap(7, 7, 7)
+                                .addComponent(chatButton)))
                         .addGap(0, 0, Short.MAX_VALUE))))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(327, 327, 327)
-                .addComponent(chatButton)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
+                .addGap(27, 27, 27)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(createProject)
-                    .addComponent(importExportFormButton))
+                    .addComponent(projectIDSortButton)
+                    .addComponent(projectNameSortButton)
+                    .addComponent(sortLabel))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(chatButton)
-                .addContainerGap(87, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(chatButton)
+                    .addComponent(createProject)
+                    .addComponent(importExportFormButton))
+                .addContainerGap(84, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -323,6 +357,48 @@ public class ProjectDashboard extends javax.swing.JFrame {
         
     }//GEN-LAST:event_chatButtonActionPerformed
 
+    private void projectIDSortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_projectIDSortButtonActionPerformed
+        for(int i = 1; i<projectList.size(); i++){
+            for(int j = 0; j<projectList.size()-i; j++){
+                if(projectList.get(j).getProjectID()>projectList.get(j+1).getProjectID()){
+                    projectList.add(j, projectList.remove(j+1));
+                }
+            }
+        }
+        
+        DefaultTableModel tableModel = (DefaultTableModel)projectTable.getModel(); // get the model of table GUI
+        tableModel.setRowCount(0);
+        Object[] row = new Object[4];
+        for(int i = 0; i<projectList.size(); i++){  
+            row[0] = projectList.get(i).getProjectID(); //assign the projectID data located at a specific index in arrayList to row[0]
+            row[1] = projectList.get(i).getProjectName();
+            row[2] = projectList.get(i).getDescription();
+            row[3] = projectList.get(i).getIssueCount();
+            tableModel.addRow(row); //inserting data into specific row of table GUI
+        }
+    }//GEN-LAST:event_projectIDSortButtonActionPerformed
+
+    private void projectNameSortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_projectNameSortButtonActionPerformed
+        for(int i = 1; i<projectList.size(); i++){
+            for(int j = 0; j<projectList.size()-i; j++){
+                if(projectList.get(j).getProjectName().compareTo(projectList.get(j+1).getProjectName())>0){
+                    projectList.add(j, projectList.remove(j+1));
+                }
+            }
+        }
+        
+        DefaultTableModel tableModel = (DefaultTableModel)projectTable.getModel(); // get the model of table GUI
+        tableModel.setRowCount(0);
+        Object[] row = new Object[4];
+        for(int i = 0; i<projectList.size(); i++){  
+            row[0] = projectList.get(i).getProjectID(); //assign the projectID data located at a specific index in arrayList to row[0]
+            row[1] = projectList.get(i).getProjectName();
+            row[2] = projectList.get(i).getDescription();
+            row[3] = projectList.get(i).getIssueCount();
+            tableModel.addRow(row); //inserting data into specific row of table GUI
+        }
+    }//GEN-LAST:event_projectNameSortButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -365,7 +441,10 @@ public class ProjectDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton projectIDSortButton;
+    private javax.swing.JButton projectNameSortButton;
     private javax.swing.JTable projectTable;
     private javax.swing.JTextField searchTextField;
+    private javax.swing.JLabel sortLabel;
     // End of variables declaration//GEN-END:variables
 }
