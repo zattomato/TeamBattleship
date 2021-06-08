@@ -74,15 +74,18 @@ public class ReactionForm extends javax.swing.JFrame {
         Statement st;
         Statement st2;
         Statement st3;
-        ResultSet rs, rs2, rs3;
+        Statement st4;
+        ResultSet rs, rs2, rs3, rs4;
         
         
         String hp= "happy";
         String sd= "sad";
         String ag= "angry";
+        String tu = "thumbsUp";
         int hnum=0;
         int snum=0;
         int anum=0;
+        int tnum=0;
         
         Cnx connectionclass = new Cnx();
         Connection connection = connectionclass.getConnection();
@@ -113,6 +116,14 @@ public class ReactionForm extends javax.swing.JFrame {
             anum=rs3.getInt("counts");
             AngryNum.setText(Integer.toString(anum)); 
             
+            //Display number of thumbsUp reaction
+            String query4 = " SELECT counts FROM react WHERE reaction = '" + tu + "' AND commentID = " + cID +" AND issueID = " + iID + " AND projectID = " + pID;
+            st4 = connection.createStatement();
+            rs4 = st4.executeQuery(query4);
+            rs4.next();
+            tnum=rs4.getInt("counts");
+            ThumbsUpNum.setText(Integer.toString(tnum));
+            
         }catch (SQLException ex) {
             Logger.getLogger(ReactionForm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -126,14 +137,17 @@ public class ReactionForm extends javax.swing.JFrame {
         Statement st;
         Statement st2;
         Statement st3;
+        Statement st4;
         PreparedStatement st_;
         PreparedStatement st_2;
         PreparedStatement st_3;
-        ResultSet rs, rs2, rs3;
+        PreparedStatement st_4;
+        ResultSet rs, rs2, rs3,rs4;
         
         String hp= "happy";
         String sd= "sad";
         String ag= "angry";
+        String tu = "thumbsUp";
         
         Cnx connectionclass = new Cnx();
         Connection connection = connectionclass.getConnection();
@@ -181,6 +195,20 @@ public class ReactionForm extends javax.swing.JFrame {
                 st_3 = connection.prepareStatement(sql3);
                 st_3.executeUpdate();
             }
+            else if(selection==4){
+                 //Get the latest number of thumbsUp reaction in database
+                String query4= " SELECT counts FROM react WHERE reaction = '" + tu + "' AND commentID = " + cID +" AND issueID = " + iID + " AND projectID = " + pID;
+                st4 = connection.createStatement();
+                rs4 = st4.executeQuery(query4);
+                rs4.next();
+                int tnum=rs4.getInt("counts");
+                //Update the value by one
+                tnum=tnum+1;
+                //Update the value in database
+                String sql4 = "UPDATE react SET counts = " + tnum +" WHERE reaction = '" + tu + "' AND commentID = " + cID +" AND issueID = " + iID + " AND projectID = " + pID;
+                st_4 = connection.prepareStatement(sql4);
+                st_4.executeUpdate();
+            }
             
         }catch (SQLException ex) {
             Logger.getLogger(ReactionForm.class.getName()).log(Level.SEVERE, null, ex);
@@ -192,12 +220,13 @@ public class ReactionForm extends javax.swing.JFrame {
     
     public void initial(){
         
-        PreparedStatement st, st2, st3;
-        ResultSet rs, rs2, rs3;
+        PreparedStatement st, st2, st3, st4;
+        ResultSet rs, rs2, rs3, rs4;
         
         String hp= "happy";
         String sd= "Sad";
         String ag= "angry";
+        String tu = "thumbsUp";
         
         Cnx connectionclass = new Cnx();
         Connection connection = connectionclass.getConnection();
@@ -267,6 +296,27 @@ public class ReactionForm extends javax.swing.JFrame {
                 st_3.executeUpdate();
             }
             
+            //Check if there is already existing row of thumbsUp reaction for the speacific commentID, issueID and projectID
+            String check4 = "SELECT * FROM react WHERE reaction = ? AND commentID = ? AND issueID = ? AND projectID = ?";
+            st4 = connection.prepareStatement(check3);
+            st4.setString(1, tu);
+            st4.setInt(2, cID);
+            st4.setInt(3, iID);
+            st4.setInt(4, pID);
+            rs4 = st4.executeQuery();
+            if(!rs4.next()){
+                //initialize to 0 if there is none
+                String sql = "INSERT INTO react VALUES(?,?,?,?,?)";
+                PreparedStatement st_4;
+                st_4 = connection.prepareStatement(sql);
+                st_4.setString(1,tu);
+                st_4.setInt(2, 0);
+                st_4.setInt(3, cID);
+                st_4.setInt(4, iID);
+                st_4.setInt(5, pID);
+                st_4.executeUpdate();
+            }
+            
         }catch (SQLException ex) {
             Logger.getLogger(ReactionForm.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -296,6 +346,9 @@ public class ReactionForm extends javax.swing.JFrame {
         Happy = new javax.swing.JButton();
         Sad = new javax.swing.JButton();
         Angry = new javax.swing.JButton();
+        ThumbsUpLabel = new javax.swing.JLabel();
+        ThumbsUpNum = new javax.swing.JLabel();
+        ThumbsUp = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -344,6 +397,20 @@ public class ReactionForm extends javax.swing.JFrame {
             }
         });
 
+        ThumbsUpLabel.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
+        ThumbsUpLabel.setText("Thumbs up:");
+
+        ThumbsUpNum.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        ThumbsUpNum.setText("0");
+
+        ThumbsUp.setFont(new java.awt.Font("Times New Roman", 1, 10)); // NOI18N
+        ThumbsUp.setText("THUMBS UP");
+        ThumbsUp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ThumbsUpActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -352,27 +419,34 @@ public class ReactionForm extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(Happy, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(Sad, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(Angry, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(50, 50, 50))
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(81, 81, 81)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(HappyLabel)
+                            .addComponent(SadLabel)
                             .addComponent(AngryLabel)
-                            .addComponent(SadLabel))
+                            .addComponent(ThumbsUpLabel))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(SadNum, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(AngryNum, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(HappyNum, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(HappyNum, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(ThumbsUpNum, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(Sad, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(Angry, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(50, 50, 50))
+                        .addGap(87, 87, 87)
+                        .addComponent(ThumbsUp)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(43, 43, 43)
+                .addGap(22, 22, 22)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(HappyLabel)
                     .addComponent(HappyNum))
@@ -384,12 +458,18 @@ public class ReactionForm extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(AngryLabel)
                     .addComponent(AngryNum))
-                .addGap(28, 28, 28)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(ThumbsUpLabel)
+                    .addComponent(ThumbsUpNum))
+                .addGap(29, 29, 29)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(Happy)
                     .addComponent(Sad)
                     .addComponent(Angry))
-                .addContainerGap(40, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(ThumbsUp)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -420,6 +500,11 @@ public class ReactionForm extends javax.swing.JFrame {
         reaction(1);
         reactionNum();
     }//GEN-LAST:event_HappyActionPerformed
+
+    private void ThumbsUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ThumbsUpActionPerformed
+        reaction(4);
+        reactionNum();
+    }//GEN-LAST:event_ThumbsUpActionPerformed
 
     /**
      * @param args the command line arguments
@@ -466,6 +551,9 @@ public class ReactionForm extends javax.swing.JFrame {
     private javax.swing.JButton Sad;
     private javax.swing.JLabel SadLabel;
     private javax.swing.JLabel SadNum;
+    private javax.swing.JButton ThumbsUp;
+    private javax.swing.JLabel ThumbsUpLabel;
+    private javax.swing.JLabel ThumbsUpNum;
     private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
