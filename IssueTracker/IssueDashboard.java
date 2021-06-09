@@ -11,11 +11,14 @@ import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import java.util.Date;
 /**
  *
  * @author User
@@ -23,6 +26,9 @@ import javax.swing.table.TableModel;
 public class IssueDashboard extends javax.swing.JFrame {
     private static int projectID;
     private String userName;
+    private ArrayList<IssueTable> issueList;
+    private ArrayList<IssueTable> copyIssueList;
+    private ArrayList<String> issueTag;// to store all defined tags inside issueTable
     private JFrame referenceToSearchForm; // to refer to the JFrame of SearchForm.java
     /**
      * Creates new form IssueDashboard
@@ -44,8 +50,23 @@ public class IssueDashboard extends javax.swing.JFrame {
         this.projectID = projectID;
         this.userName = userName;
         initComponents();
+        filterStatus.addItem("Status");
+        filterStatus.addItem("Open");
+        filterStatus.addItem("Resolved");
+        filterStatus.addItem("Closed");
+        filterStatus.addItem("In Progress");
+        filterStatus.addItem("Reopened");
         this.setLocationRelativeTo(null); //to let the form adjust to the center of our computer screen
-        insertTableContents(projectID); // show the contents of table 'issue' from database
+        issueList = createList(projectID);
+        copyIssueList = new ArrayList<>();
+        copyIssueList = (ArrayList<IssueTable>) issueList.clone();
+        filterTag.addItem("Tag");
+        if(!issueTag.isEmpty()){
+            for(int i =0; i<issueTag.size(); i++){
+                filterTag.addItem(issueTag.get(i));
+            }
+        }
+        insertTableContents(issueList);// show the contents of table 'issue' from database
     }
     /**
      * method to store data from database into ArrayList before inserting it into table GUI
@@ -53,7 +74,8 @@ public class IssueDashboard extends javax.swing.JFrame {
      * @return ArrayList of type IssueTable
      */
     public ArrayList<IssueTable> createList(int projID){
-        ArrayList<IssueTable> list = new ArrayList<>();
+        issueList = new ArrayList<>();
+        issueTag = new ArrayList<>();
         try{
             Cnx connectionClass = new Cnx();//establish connection
             Connection connection = connectionClass.getConnection();//establish connection
@@ -80,25 +102,28 @@ public class IssueDashboard extends javax.swing.JFrame {
                 projectID = result1.getInt("projectID");
                 issueStatus = result1.getString("issueStatus");
                 issueTag = result1.getString("issueTag");
+                if(!this.issueTag.contains(issueTag)){
+                    this.issueTag.add(issueTag);
+                }
                 issueTime = result1.getTimestamp("date");
                 issueAssignee = result1.getString("assignee");
                 issueCreatedBy = result1.getString("creator");
                 issueDescription = result1.getString("description");
                 issuePriority = result1.getInt("priority");
-                list.add(new IssueTable(issueID,issueName,projectID,issueStatus,issueTag,issueTime,issueAssignee,issueCreatedBy,issueDescription,issuePriority)); // instantiate ProjectTable object and insert it into ArrayList
+                issueList.add(new IssueTable(issueID,issueName,projectID,issueStatus,issueTag,issueTime,issueAssignee,issueCreatedBy,issueDescription,issuePriority)); // instantiate ProjectTable object and insert it into ArrayList
                 
             }
         } catch (SQLException ex) {
             Logger.getLogger(IssueDashboard.class.getName()).log(Level.SEVERE, null, ex); // will just print the errors to our console
-        }return list; //return the ArrayList
+        }return issueList; //return the ArrayList
     }
     /**
      * method to insert data stored inside ArrayList to the table GUI
      * @return nothing
      */
-    public void insertTableContents(int projectID){
-        ArrayList<IssueTable> list = createList(projectID); // object referring to the ArrayList created inside createList();
+    public void insertTableContents(ArrayList<IssueTable> list){
         DefaultTableModel tableModel = (DefaultTableModel)IssueDashboardTable.getModel(); // get the model of table GUI
+        tableModel.setRowCount(0);
         Object[] row = new Object[10];
         for(int i = 0; i<list.size(); i++){  
             row[0] = list.get(i).getIssueID(); //assign the projectID data located at a specific index in arrayList to row[0]
@@ -132,6 +157,12 @@ public class IssueDashboard extends javax.swing.JFrame {
         BackButton = new javax.swing.JButton();
         searchBackButton = new javax.swing.JButton();
         changeLogButton = new javax.swing.JButton();
+        filterTag = new javax.swing.JComboBox<>();
+        filterStatus = new javax.swing.JComboBox<>();
+        sortDateButton = new javax.swing.JButton();
+        sortPriorityButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -214,38 +245,96 @@ public class IssueDashboard extends javax.swing.JFrame {
             }
         });
 
+        filterTag.setModel(new javax.swing.DefaultComboBoxModel<>());
+        filterTag.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterTagActionPerformed(evt);
+            }
+        });
+
+        filterStatus.setModel(new javax.swing.DefaultComboBoxModel<>());
+        filterStatus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                filterStatusActionPerformed(evt);
+            }
+        });
+
+        sortDateButton.setText("Time");
+        sortDateButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortDateButtonActionPerformed(evt);
+            }
+        });
+
+        sortPriorityButton.setText("Priority");
+        sortPriorityButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                sortPriorityButtonActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setFont(new java.awt.Font("Trebuchet MS", 0, 14)); // NOI18N
+        jLabel1.setText("Sort By:");
+
+        jLabel2.setFont(new java.awt.Font("Trebuchet MS", 0, 14)); // NOI18N
+        jLabel2.setText("Filter By:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(112, 112, 112)
+                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(120, 120, 120))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(257, 257, 257)
-                        .addComponent(IssueDashboardLabel))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(68, 68, 68)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(issueSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(40, 40, 40)
+                                    .addComponent(sortPriorityButton)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(sortDateButton)
+                                    .addGap(14, 14, 14)
+                                    .addComponent(filterStatus, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(filterTag, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(BackButton, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(searchBackButton)
                                 .addGap(265, 265, 265)
                                 .addComponent(changeLogButton)
                                 .addGap(18, 18, 18)
-                                .addComponent(CreateNewIssue))
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 647, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(issueSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, 299, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(70, Short.MAX_VALUE))
+                                .addComponent(CreateNewIssue))))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(265, 265, 265)
+                        .addComponent(IssueDashboardLabel)))
+                .addContainerGap(82, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(23, 23, 23)
+                .addGap(26, 26, 26)
                 .addComponent(IssueDashboardLabel)
                 .addGap(18, 18, 18)
-                .addComponent(issueSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(issueSearchBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(filterTag, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(filterStatus, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(sortDateButton)
+                    .addComponent(sortPriorityButton))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 261, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -254,7 +343,7 @@ public class IssueDashboard extends javax.swing.JFrame {
                     .addComponent(BackButton)
                     .addComponent(searchBackButton)
                     .addComponent(changeLogButton))
-                .addContainerGap(77, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -345,6 +434,93 @@ public class IssueDashboard extends javax.swing.JFrame {
         ChangeLogForm changeLogForm = new ChangeLogForm(projectID);
         changeLogForm.setVisible(true);
     }//GEN-LAST:event_changeLogButtonActionPerformed
+            
+    private void sortPriorityButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortPriorityButtonActionPerformed
+        for(int i = 1; i<copyIssueList.size(); i++){
+            for(int j = 0; j< copyIssueList.size()-1; j++){
+                if(copyIssueList.get(j).getIssuePriority()<copyIssueList.get(j+1).getIssuePriority()){
+                    copyIssueList.add(j, copyIssueList.remove(j+1));
+                }
+            }
+        }
+        insertTableContents(copyIssueList);
+    }//GEN-LAST:event_sortPriorityButtonActionPerformed
+
+    private void sortDateButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_sortDateButtonActionPerformed
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+       for(int i = 1; i<copyIssueList.size(); i++){
+            for(int j = 0; j< copyIssueList.size()-1; j++){
+                try {
+                    Date index1 = sdf.parse(copyIssueList.get(j).getIssueTime().toString());
+                    Date index2 = sdf.parse(copyIssueList.get(j+1).getIssueTime().toString());
+                    if(index1.compareTo(index2)>0){
+                        copyIssueList.add(j, copyIssueList.remove(j+1));
+                    }
+                } catch (ParseException ex) {
+                    Logger.getLogger(IssueDashboard.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        insertTableContents(copyIssueList);
+    }//GEN-LAST:event_sortDateButtonActionPerformed
+
+    private void filterStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterStatusActionPerformed
+        String status = filterStatus.getSelectedItem().toString();
+        String tag = "";
+        try{
+             tag = filterTag.getSelectedItem().toString();// nullpointerException might occur at the beginning because tag is null and cannot parse to string
+            
+        }catch(NullPointerException ex){
+            
+        }
+        if(!status.equals("Status")){ //Status is default placeholder
+            copyIssueList.clear();
+            for(int i = 0; i<issueList.size(); i++){
+                if(!tag.equals("Tag")){ // Tag is default palceholder
+                    if(issueList.get(i).getIssueStatus().equals(status)&& issueList.get(i).getIssueTag().equals(tag)){
+                        copyIssueList.add(issueList.get(i));
+                    }
+                }
+                else{
+                    if(issueList.get(i).getIssueStatus().equals(status)){
+                        copyIssueList.add(issueList.get(i));
+                        
+                    }
+                    
+                }
+            }
+            insertTableContents(copyIssueList);
+        }
+    }//GEN-LAST:event_filterStatusActionPerformed
+
+    private void filterTagActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_filterTagActionPerformed
+        String tag = filterTag.getSelectedItem().toString();
+        String status = "";
+        try{
+             status = filterStatus.getSelectedItem().toString();// nullpointerException might occur at the beginning because status is null and cannot parse to string
+            
+        }catch(NullPointerException ex){
+            
+        }
+        if(!tag.equals("Tag")){ // Tag is default placeholder
+            copyIssueList.clear();
+            for(int i = 0; i<issueList.size(); i++){
+                if(!status.equals("Status")){ // Status is default placeholder
+                    if(issueList.get(i).getIssueStatus().equals(status)&& issueList.get(i).getIssueTag().equals(tag)){
+                        copyIssueList.add(issueList.get(i));
+                    }
+                }
+                else{
+                    
+                    if(issueList.get(i).getIssueTag().equals(tag)){
+                        copyIssueList.add(issueList.get(i));
+                    }
+                    
+                }
+            }
+            insertTableContents(copyIssueList);
+        }
+    }//GEN-LAST:event_filterTagActionPerformed
 
     /**
      * @param args the command line arguments
@@ -387,9 +563,15 @@ public class IssueDashboard extends javax.swing.JFrame {
     private javax.swing.JLabel IssueDashboardLabel;
     private javax.swing.JTable IssueDashboardTable;
     private javax.swing.JButton changeLogButton;
+    private javax.swing.JComboBox<String> filterStatus;
+    private javax.swing.JComboBox<String> filterTag;
     private javax.swing.JTextField issueSearchBar;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton searchBackButton;
+    private javax.swing.JButton sortDateButton;
+    private javax.swing.JButton sortPriorityButton;
     // End of variables declaration//GEN-END:variables
 }
