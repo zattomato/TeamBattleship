@@ -86,24 +86,32 @@ public class IssuePage extends javax.swing.JFrame {
         this.setTitle("Issue Page");
         this.setLocationRelativeTo(null);
         statusBox.addItem(userInfo[3][1]);
-        //Open, In Progress, Closed, Resolved, Reopened
-        if(userInfo[3][1].equals("Open")){
-            statusBox.addItem("In Progress");
-            statusBox.addItem("Closed");
-            statusBox.addItem("Resolved");
-        }else if(userInfo[3][1].equals("In Progress")){
-            statusBox.addItem("Open");
-            statusBox.addItem("Closed");
-            statusBox.addItem("Resolved");
-        }else if(userInfo[3][1].equals("Closed")){
-            statusBox.addItem("Reopened");
-        }else if(userInfo[3][1].equals("Resolved")){
-            statusBox.addItem("Closed");
-            statusBox.addItem("Reopened");
-        }else if(userInfo[3][1].equals("Reopened")){
-            statusBox.addItem("In Progress");
-            statusBox.addItem("Closed");
-            statusBox.addItem("Resolved");
+        if(!userName.equals(userInfo[6][1]) && !userName.equals(userInfo[7][1])){
+            updateButton.setEnabled(false);
+            tag.setEditable(false);
+            priority.setEditable(false);
+            description.setEditable(false);
+        }
+        else{
+            //Open, In Progress, Closed, Resolved, Reopened
+            if(userInfo[3][1].equals("Open")){
+                statusBox.addItem("In Progress");
+                statusBox.addItem("Closed");
+                statusBox.addItem("Resolved");
+            }else if(userInfo[3][1].equals("In Progress")){
+                statusBox.addItem("Open");
+                statusBox.addItem("Closed");
+                statusBox.addItem("Resolved");
+            }else if(userInfo[3][1].equals("Closed")){
+                statusBox.addItem("Reopened");
+            }else if(userInfo[3][1].equals("Resolved")){
+                statusBox.addItem("Closed");
+                statusBox.addItem("Reopened");
+            }else if(userInfo[3][1].equals("Reopened")){
+                statusBox.addItem("In Progress");
+                statusBox.addItem("Closed");
+                statusBox.addItem("Resolved");
+            }
         }
     }
     /**
@@ -476,7 +484,7 @@ public class IssuePage extends javax.swing.JFrame {
                             }
                             if(!priority.equals(userInfo[9][1])){
                                 updated = true;
-                                String query3 = "UPDATE issue SET priority = '"+priority+"' WHERE issueID = "+issueIDs+" and projectID = "+projectIDs;
+                                String query3 = "UPDATE issue SET priority = "+priority+" WHERE issueID = "+issueIDs+" and projectID = "+projectIDs;
                                 if(st3.executeUpdate(query3) != 0){
                                     ChangeLog changeLog = new ChangeLog(projectIDs,userName,currentTime,"update issue " + issueIDs + " priority to " +priority);
                                     changeLog.addLog();
