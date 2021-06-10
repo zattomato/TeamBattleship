@@ -305,7 +305,7 @@ public class IssueCreationForm extends javax.swing.JFrame {
         int option = JOptionPane.showConfirmDialog(null, "Are you sure you want to submit?", "Alert!",JOptionPane.YES_NO_OPTION); // prompt dialog panel
             if(option==0){ // if yes
                 try{
-
+                    // get all fields
                     String name = this.name.getText();
                     String assignee = this.assignee.getText();
                     String status = statusBox.getSelectedItem().toString();
@@ -345,7 +345,7 @@ public class IssueCreationForm extends javax.swing.JFrame {
                         ResultSet result1 = st1.executeQuery(query1); // execute query1 and store it inside result1
                         result1.next();
                         int issueID = result1.getInt("") + 1; // adding 1 to the highest id inside database and assign it to current issueID to be created
-                        String sql = "INSERT INTO issue VALUES ("+issueID+",'"+name+"',"+projectID+",'"+status+"','"+tag+"','"+currentTime+"','"+assignee+"','creator','"+description+"',"+priority+")";
+                        String sql = "INSERT INTO issue VALUES ("+issueID+",'"+name+"',"+projectID+",'"+status+"','"+tag+"','"+currentTime+"','"+assignee+"','"+userName+"','"+description+"',"+priority+")";
                         if(st2.executeUpdate(sql) != 0){
                             JOptionPane.showMessageDialog(null,"Your issue has been created");
                             IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectID), userName);
