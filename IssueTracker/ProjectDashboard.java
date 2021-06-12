@@ -116,6 +116,7 @@ public class ProjectDashboard extends javax.swing.JFrame {
         projectIDSortButton = new javax.swing.JButton();
         projectNameSortButton = new javax.swing.JButton();
         sortLabel = new javax.swing.JLabel();
+        reportButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -218,6 +219,14 @@ public class ProjectDashboard extends javax.swing.JFrame {
         sortLabel.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
         sortLabel.setText("Sort By:");
 
+        reportButton.setFont(new java.awt.Font("Times New Roman", 0, 18)); // NOI18N
+        reportButton.setText("Report");
+        reportButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                reportButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -238,17 +247,19 @@ public class ProjectDashboard extends javax.swing.JFrame {
                                 .addComponent(searchTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 287, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap(89, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(188, 188, 188)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(createProject)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(importExportFormButton)
-                                .addGap(7, 7, 7)
-                                .addComponent(chatButton)))
-                        .addGap(0, 0, Short.MAX_VALUE))))
+                        .addGap(188, 188, 188)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 284, Short.MAX_VALUE))))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(129, 129, 129)
+                .addComponent(createProject)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(importExportFormButton)
+                .addGap(7, 7, 7)
+                .addComponent(chatButton)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(reportButton)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -267,7 +278,8 @@ public class ProjectDashboard extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(chatButton)
                     .addComponent(createProject)
-                    .addComponent(importExportFormButton))
+                    .addComponent(importExportFormButton)
+                    .addComponent(reportButton))
                 .addContainerGap(84, Short.MAX_VALUE))
         );
 
@@ -399,6 +411,12 @@ public class ProjectDashboard extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_projectNameSortButtonActionPerformed
 
+    private void reportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_reportButtonActionPerformed
+        ReportGeneration reportGeneration = new ReportGeneration(userName);
+        reportGeneration.setVisible(true);
+        this.dispose();
+    }//GEN-LAST:event_reportButtonActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -444,6 +462,7 @@ public class ProjectDashboard extends javax.swing.JFrame {
     private javax.swing.JButton projectIDSortButton;
     private javax.swing.JButton projectNameSortButton;
     private javax.swing.JTable projectTable;
+    private javax.swing.JButton reportButton;
     private javax.swing.JTextField searchTextField;
     private javax.swing.JLabel sortLabel;
     // End of variables declaration//GEN-END:variables
