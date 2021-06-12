@@ -105,30 +105,6 @@ public class IssueCreationForm extends javax.swing.JFrame {
 
         jLabel7.setText("Priority:");
 
-        name.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nameActionPerformed(evt);
-            }
-        });
-
-        assignee.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                assigneeActionPerformed(evt);
-            }
-        });
-
-        tag.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tagActionPerformed(evt);
-            }
-        });
-
-        priority.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                priorityActionPerformed(evt);
-            }
-        });
-
         projectNames.setText("Project Name");
 
         cancelButton.setText("Cancel");
@@ -146,25 +122,10 @@ public class IssueCreationForm extends javax.swing.JFrame {
         });
 
         statusBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Open", "In Progress", "Closed", "Resolved", "Reopened" }));
-        statusBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                statusBoxActionPerformed(evt);
-            }
-        });
 
         undo.setText("Undo");
-        undo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                undoActionPerformed(evt);
-            }
-        });
 
         redo.setText("Redo");
-        redo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                redoActionPerformed(evt);
-            }
-        });
 
         description.setColumns(20);
         description.setRows(5);
@@ -275,22 +236,6 @@ public class IssueCreationForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void assigneeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assigneeActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_assigneeActionPerformed
-
-    private void tagActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tagActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tagActionPerformed
-
-    private void priorityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priorityActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_priorityActionPerformed
-
-    private void nameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_nameActionPerformed
-
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         //go to make Issue Dashboard Form
         IssueDashboard issueDashboard = new IssueDashboard(Integer.valueOf(projectID), userName);
@@ -367,18 +312,6 @@ public class IssueCreationForm extends javax.swing.JFrame {
                 }
             }
     }//GEN-LAST:event_createButtonActionPerformed
-
-    private void statusBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_statusBoxActionPerformed
-
-    private void undoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_undoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_undoActionPerformed
-
-    private void redoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_redoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_redoActionPerformed
 
     /**
      * @param args the command line arguments

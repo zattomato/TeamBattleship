@@ -191,24 +191,15 @@
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="name">
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="nameActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="assignee">
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="assigneeActionPerformed"/>
-          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_SerializeTo" type="java.lang.String" value="IssueCreationForm_assignee"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JTextField" name="tag">
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tagActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="priority">
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="priorityActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JLabel" name="projectNames">
           <Properties>
@@ -246,9 +237,6 @@
               </StringArray>
             </Property>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="statusBoxActionPerformed"/>
-          </Events>
           <AuxValues>
             <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
           </AuxValues>
@@ -257,17 +245,11 @@
           <Properties>
             <Property name="text" type="java.lang.String" value="Undo"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="undoActionPerformed"/>
-          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="redo">
           <Properties>
             <Property name="text" type="java.lang.String" value="Redo"/>
           </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="redoActionPerformed"/>
-          </Events>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane2">
           <AuxValues>

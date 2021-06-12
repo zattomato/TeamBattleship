@@ -164,11 +164,6 @@ public class IssuePage extends javax.swing.JFrame {
         name.setText("Issue Name");
 
         tag.setText("Issue Tag");
-        tag.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tagActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -225,19 +220,8 @@ public class IssuePage extends javax.swing.JFrame {
 
         projectName.setText("Project Name");
 
-        statusBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                statusBoxActionPerformed(evt);
-            }
-        });
-
         priority.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         priority.setText("0");
-        priority.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                priorityActionPerformed(evt);
-            }
-        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -539,22 +523,10 @@ public class IssuePage extends javax.swing.JFrame {
             }
     }//GEN-LAST:event_updateButtonActionPerformed
 
-    private void statusBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_statusBoxActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_statusBoxActionPerformed
-
     private void searchBackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBackButtonActionPerformed
         referenceToSearchForm.setVisible(true); // set the SearchForm.java to true
         this.dispose(); // dispose this form
     }//GEN-LAST:event_searchBackButtonActionPerformed
-
-    private void priorityActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_priorityActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_priorityActionPerformed
-
-    private void tagActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tagActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_tagActionPerformed
 
     /**
      * @param args the command line arguments
