@@ -450,6 +450,7 @@ public class IssuePage extends javax.swing.JFrame {
                     String priority = this.priority.getText();
                     String description = this.description.getText();
                     description = description.replaceAll("'", "''");
+                    userInfo[8][1] = userInfo[8][1].replaceAll("'", "''");
                     Matcher matcher1 = Pattern.compile("^[1-9]$").matcher(priority);
                     if(!matcher1.find()){
                         JOptionPane.showMessageDialog(null, "ALERT!\nInvalid Priority");
