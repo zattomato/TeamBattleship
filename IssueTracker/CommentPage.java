@@ -186,7 +186,6 @@ public class CommentPage extends javax.swing.JFrame  {
                     indexOfJEditButton.add(i);
                 }
                 picture = null;
-                System.out.println("i : " + i);
                 
                 gap+= 100;
                 i++;
@@ -276,6 +275,7 @@ public class CommentPage extends javax.swing.JFrame  {
                 try{
 
                     String description = this.addComment.getText(); 
+                    description = description.replaceAll("'","''");
                     String name = sessionUserName;
                     
                     //check if any field is empty

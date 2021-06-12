@@ -194,11 +194,6 @@ public class IssueDashboard extends javax.swing.JFrame {
         jScrollPane1.setViewportView(IssueDashboardTable);
 
         CreateNewIssue.setText("Create Issue");
-        CreateNewIssue.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                CreateNewIssueMouseClicked(evt);
-            }
-        });
         CreateNewIssue.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 CreateNewIssueActionPerformed(evt);
@@ -381,10 +376,6 @@ public class IssueDashboard extends javax.swing.JFrame {
         }
         //IssuePage.setVisible(true);
     }//GEN-LAST:event_IssueDashboardTableMouseClicked
-
-    private void CreateNewIssueMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CreateNewIssueMouseClicked
-
-    }//GEN-LAST:event_CreateNewIssueMouseClicked
 
     private void BackButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BackButtonActionPerformed
         ProjectDashboard projectDashboard = new ProjectDashboard(userName);

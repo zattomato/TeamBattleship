@@ -206,7 +206,6 @@
             <Property name="text" type="java.lang.String" value="Create Issue"/>
           </Properties>
           <Events>
-            <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="CreateNewIssueMouseClicked"/>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="CreateNewIssueActionPerformed"/>
           </Events>
         </Component>
