@@ -450,11 +450,10 @@ public class IssuePage extends javax.swing.JFrame {
                     String priority = this.priority.getText();
                     String description = this.description.getText();
                     description = description.replaceAll("'", "''");
-                    userInfo[8][1] = userInfo[8][1].replaceAll("'", "''");
                     Matcher matcher1 = Pattern.compile("^[1-9]$").matcher(priority);
                     if(!matcher1.find()){
                         JOptionPane.showMessageDialog(null, "ALERT!\nInvalid Priority");
-                        this.priority.setText(null);
+                        this.priority.setText(userInfo[9][1]);
                         throw new Exception("");
                     }
                         try{
@@ -500,7 +499,7 @@ public class IssuePage extends javax.swing.JFrame {
                                     JOptionPane.showMessageDialog(null,"Check your information");
                                 }
                             }
-                            if(!description.equals(userInfo[8][1])){
+                            if(!description.equals(userInfo[8][1].replaceAll("'", "''"))){
                                 updated = true;
                                 String query4 = "UPDATE issue SET description = '"+description+"' WHERE issueID = "+issueIDs+" and projectID = "+projectIDs;
                                 if(st4.executeUpdate(query4) != 0){
