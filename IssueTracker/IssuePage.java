@@ -459,6 +459,7 @@ public class IssuePage extends javax.swing.JFrame {
                     //check if any field is empty
                     if(description.equals("")){
                         JOptionPane.showMessageDialog(null, "ALERT!Please enter all requirement field");
+                        this.description.setText(userInfo[8][1]);
                         throw new Exception("");
                     }
                         try{
