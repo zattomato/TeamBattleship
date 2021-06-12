@@ -63,7 +63,6 @@ public class IssuePage extends javax.swing.JFrame {
                 userInfo[i-1][0] = rsmd.getColumnName(i);
             }
         }
-        System.out.println("");
         issueIDs = Integer.valueOf(userInfo[0][1]);
         
         }catch (SQLException ex) {
@@ -78,7 +77,6 @@ public class IssuePage extends javax.swing.JFrame {
         while(result1.next()){
             projectNames = result1.getString("projectName");
         }
-        System.out.println(projectNames);
         }catch (SQLException ex){
             
         }
@@ -180,7 +178,7 @@ public class IssuePage extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tag, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tag, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jLabel2)
@@ -448,8 +446,8 @@ public class IssuePage extends javax.swing.JFrame {
                     String status = statusBox.getSelectedItem().toString();
                     String tag= this.tag.getText();
                     String priority = this.priority.getText();
-                    String description = this.description.getText(); 
-                    System.out.println(status);
+                    String description = this.description.getText();
+                    description = description.replaceAll("'", "''");
                         try{
                             Cnx connectionClass = new Cnx(); // create connection 
                             Connection connection = connectionClass.getConnection(); //create connection

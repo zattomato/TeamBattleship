@@ -48,7 +48,6 @@ public class IssueCreationForm extends javax.swing.JFrame {
         while(result1.next()){
             projectName = result1.getString("projectName");
         }
-        System.out.println(projectName);
         }catch (SQLException ex){
             
         }
@@ -311,7 +310,8 @@ public class IssueCreationForm extends javax.swing.JFrame {
                     String status = statusBox.getSelectedItem().toString();
                     String tag= this.tag.getText();
                     String priority = this.priority.getText();
-                    String description = this.description.getText(); 
+                    String description = this.description.getText();
+                    description = description.replaceAll("'", "''");
                     //make sure there is 1 or 2 digit priority
                     Matcher matcher1 = Pattern.compile("^[0-1][0]$").matcher(priority);
                     Matcher matcher2 = Pattern.compile("^[0-9]$").matcher(priority);
