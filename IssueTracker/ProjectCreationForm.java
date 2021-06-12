@@ -240,7 +240,7 @@ public class ProjectCreationForm extends javax.swing.JFrame {
         if(option==0){ // if yes
             try{
                 String projectName = projectNameText.getText();
-                String projectDescription = projectDescriptionText.getText();
+                String projectDescription = projectDescriptionText.getText().replaceAll("'", "''");
                 
                 if(projectName.trim().equals("")||
                         projectName.trim().toLowerCase().equals("name")){
