@@ -456,6 +456,12 @@ public class IssuePage extends javax.swing.JFrame {
                         this.priority.setText(userInfo[9][1]);
                         throw new Exception("");
                     }
+                    //check if any field is empty
+                    if(description.equals("")){
+                        JOptionPane.showMessageDialog(null, "ALERT!Please enter all requirement field");
+                        this.description.setText(userInfo[8][1]);
+                        throw new Exception("");
+                    }
                         try{
                             Cnx connectionClass = new Cnx(); // create connection 
                             Connection connection = connectionClass.getConnection(); //create connection
