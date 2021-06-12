@@ -16,6 +16,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -448,6 +450,12 @@ public class IssuePage extends javax.swing.JFrame {
                     String priority = this.priority.getText();
                     String description = this.description.getText();
                     description = description.replaceAll("'", "''");
+                    Matcher matcher1 = Pattern.compile("^[1-9]$").matcher(priority);
+                    if(!matcher1.find()){
+                        JOptionPane.showMessageDialog(null, "ALERT!\nInvalid Priority");
+                        this.priority.setText(null);
+                        throw new Exception("");
+                    }
                         try{
                             Cnx connectionClass = new Cnx(); // create connection 
                             Connection connection = connectionClass.getConnection(); //create connection

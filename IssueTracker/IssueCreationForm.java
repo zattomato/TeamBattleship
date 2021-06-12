@@ -313,16 +313,15 @@ public class IssueCreationForm extends javax.swing.JFrame {
                     String description = this.description.getText();
                     description = description.replaceAll("'", "''");
                     //make sure there is 1 or 2 digit priority
-                    Matcher matcher1 = Pattern.compile("^[0-1][0]$").matcher(priority);
-                    Matcher matcher2 = Pattern.compile("^[0-9]$").matcher(priority);
-                    if(!matcher1.find() && !matcher2.find()){
+                    Matcher matcher1 = Pattern.compile("^[1-9]$").matcher(priority);
+                    if(!matcher1.find()){
                         JOptionPane.showMessageDialog(null, "ALERT!\nInvalid Priority");
                         this.priority.setText(null);
                         throw new Exception("");
                     }
 
                     //check if any field is empty
-                    if(name.equals("")||assignee.equals("")||status.equals("")||tag.equals("")||priority.equals("")||description.equals("")){
+                    if(name.equals("")||status.equals("")||priority.equals("")||description.equals("")){
                         JOptionPane.showMessageDialog(null, "ALERT!Please enter all requirement field");
                         throw new Exception("");
                     }
