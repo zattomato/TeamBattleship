@@ -6,8 +6,6 @@
 package IssueTracker;
 
 import ConnectionToDatabase.Cnx;
-import java.awt.Color;
-import java.awt.Image;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,7 +15,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 public class RegistrationForm extends javax.swing.JFrame {

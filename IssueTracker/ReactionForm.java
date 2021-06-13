@@ -6,10 +6,6 @@
 package IssueTracker;
 
 import ConnectionToDatabase.Cnx;
-import java.awt.Color;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,10 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import javax.swing.JOptionPane;
-import javax.swing.SwingConstants;
 
 public class ReactionForm extends javax.swing.JFrame {
     
