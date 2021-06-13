@@ -37,7 +37,6 @@ public class IssueDashboard extends javax.swing.JFrame {
     public IssueDashboard() {
         initComponents();
         this.setLocationRelativeTo(null); //to let the form adjust to the center of our computer screen
-        //insertTableContents(); // show the contents of table 'issue' from database
     }
     
     public IssueDashboard(int projectID,String userName, JFrame referenceToSearchForm){ // overloaded constructor to accept reference to SearchForm.java 
@@ -119,7 +118,7 @@ public class IssueDashboard extends javax.swing.JFrame {
     }
     /**
      * method to insert data stored inside ArrayList to the table GUI
-     * @return nothing
+     * @param list
      */
     public void insertTableContents(ArrayList<IssueTable> list){
         DefaultTableModel tableModel = (DefaultTableModel)IssueDashboardTable.getModel(); // get the model of table GUI
