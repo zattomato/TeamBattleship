@@ -14,7 +14,7 @@ import javax.swing.table.TableModel;
 
 public class ProjectDashboard extends javax.swing.JFrame {
 
-    private String userName = "username";// temporary can be deleted later
+    private String userName;
     private ArrayList<ProjectTable> projectList;
     /**
      * Creates new form ProjectDashboard
