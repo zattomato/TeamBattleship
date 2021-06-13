@@ -6,15 +6,11 @@
 package IssueTracker;
 
 import ConnectionToDatabase.Cnx;
-import java.awt.Color;
-import java.awt.Image;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 public class LoginForm extends javax.swing.JFrame {
@@ -198,7 +194,7 @@ public class LoginForm extends javax.swing.JFrame {
                 this.dispose();
             } 
             else {
-                JOptionPane.showMessageDialog(null, "Wrong IC or Password!", "Login Error!", 2);
+                JOptionPane.showMessageDialog(null, "Wrong email or Password!", "Login Error!", 2);
             }
                     
             
