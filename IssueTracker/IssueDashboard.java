@@ -54,7 +54,6 @@ public class IssueDashboard extends javax.swing.JFrame {
         filterStatus.addItem("Resolved");
         filterStatus.addItem("Closed");
         filterStatus.addItem("In Progress");
-        filterStatus.addItem("Reopened");
         this.setLocationRelativeTo(null); //to let the form adjust to the center of our computer screen
         issueList = createList(projectID);
         copyIssueList = new ArrayList<>();

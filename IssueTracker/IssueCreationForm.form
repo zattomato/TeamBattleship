@@ -228,12 +228,11 @@
         <Component class="javax.swing.JComboBox" name="statusBox">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="5">
+              <StringArray count="4">
                 <StringItem index="0" value="Open"/>
                 <StringItem index="1" value="In Progress"/>
                 <StringItem index="2" value="Closed"/>
                 <StringItem index="3" value="Resolved"/>
-                <StringItem index="4" value="Reopened"/>
               </StringArray>
             </Property>
           </Properties>

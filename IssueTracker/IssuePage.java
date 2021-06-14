@@ -107,10 +107,6 @@ public class IssuePage extends javax.swing.JFrame {
             }else if(userInfo[3][1].equals("Resolved")){
                 statusBox.addItem("Closed");
                 statusBox.addItem("Reopened");
-            }else if(userInfo[3][1].equals("Reopened")){
-                statusBox.addItem("In Progress");
-                statusBox.addItem("Closed");
-                statusBox.addItem("Resolved");
             }
         }
     }
@@ -435,6 +431,9 @@ public class IssuePage extends javax.swing.JFrame {
                     String description = this.description.getText();
                     description = description.replaceAll("'", "''");
                     Matcher matcher1 = Pattern.compile("^[1-9]$").matcher(priority);
+                    if(status.equals("Reopened")){
+                        status = "Open";
+                    }
                     if(!matcher1.find()){
                         JOptionPane.showMessageDialog(null, "ALERT!\nInvalid Priority");
                         this.priority.setText(userInfo[9][1]);

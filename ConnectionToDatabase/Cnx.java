@@ -17,7 +17,6 @@ public class Cnx {
        try{
           
         connection = DriverManager.getConnection("jdbc:sqlserver://bugslife.database.windows.net:1433;database=BugsLife",userName,password);
-        System.out.println("connected to database");
        }
        catch(Exception e){
            e.printStackTrace();

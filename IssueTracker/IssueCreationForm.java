@@ -121,7 +121,7 @@ public class IssueCreationForm extends javax.swing.JFrame {
             }
         });
 
-        statusBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Open", "In Progress", "Closed", "Resolved", "Reopened" }));
+        statusBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Open", "In Progress", "Closed", "Resolved" }));
 
         undo.setText("Undo");
 
